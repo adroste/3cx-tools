@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/webclient/tcx-tools-panel-app/static/css/main.e97911c8.css",
+    "main.js": "/webclient/tcx-tools-panel-app/static/js/main.45117b93.js",
+    "static/js/787.edd5c5e7.chunk.js": "/webclient/tcx-tools-panel-app/static/js/787.edd5c5e7.chunk.js",
+    "index.html": "/webclient/tcx-tools-panel-app/index.html",
+    "static/media/getFetch.cjs": "/webclient/tcx-tools-panel-app/static/media/getFetch.c780682470504fffbd04.cjs",
+    "main.e97911c8.css.map": "/webclient/tcx-tools-panel-app/static/css/main.e97911c8.css.map",
+    "main.45117b93.js.map": "/webclient/tcx-tools-panel-app/static/js/main.45117b93.js.map",
+    "787.edd5c5e7.chunk.js.map": "/webclient/tcx-tools-panel-app/static/js/787.edd5c5e7.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e97911c8.css",
+    "static/js/main.45117b93.js"
+  ]
+}

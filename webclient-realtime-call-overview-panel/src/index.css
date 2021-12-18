@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.tcx-tools-wrapper {
+  margin: 0;
+  font-family: Arial,Helvetica Neue,Helvetica,sans-serif;
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app-container {
+  position: relative !important;
+}
+
+#tcx-tools-panel-app {
+  height: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+#demo-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  width: 100vw;
+}
+
+#demo-header {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  background: #363535;
+  height: 50px;
+  width: 100%;
+}
+
+#demo-nav {
+  width: 51px;
+  background: #363535;
+  height: 100%;
+}
+
+.demo-app-container {
+  grid-column-start: 2;
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+}
