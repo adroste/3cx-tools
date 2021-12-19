@@ -1,0 +1,56 @@
+{
+  "name": "3cx-tools-server",
+  "version": "0.1.0",
+  "description": "Service to inject custom functionality into a 3CX instance.",
+  "main": "build/src/main.js",
+  "engines": {
+    "node": ">= 16.13"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/jest": "~27.0.2",
+    "@types/lodash": "^4.14.178",
+    "@types/node": "~16.11.6",
+    "@types/pg": "^8.6.2",
+    "@typescript-eslint/eslint-plugin": "~5.7.0",
+    "@typescript-eslint/parser": "~5.7.0",
+    "eslint": "~8.4.1",
+    "eslint-config-prettier": "~8.3.0",
+    "eslint-plugin-jest": "~25.3.0",
+    "jest": "~27.4.4",
+    "nodemon": "^2.0.15",
+    "prettier": "~2.5.1",
+    "rimraf": "~3.0.2",
+    "ts-jest": "~27.1.1",
+    "ts-node": "^10.4.0",
+    "tsutils": "~3.21.0",
+    "typescript": "~4.5.3"
+  },
+  "scripts": {
+    "start": "NODE_ENV=production node build/src/main.js",
+    "dev": "NODE_ENV=development ts-node src/main.ts",
+    "prebuild": "npm run lint",
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adroste/3cx-tools.git"
+  },
+  "author": "Alexander Droste",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adroste/3cx-tools/issues"
+  },
+  "homepage": "https://github.com/adroste/3cx-tools",
+  "dependencies": {
+    "console-stamp": "^3.0.3",
+    "fs-extra": "^10.0.0",
+    "lodash": "^4.17.21",
+    "pg": "^8.7.1",
+    "tslib": "~2.3.1"
+  }
+}

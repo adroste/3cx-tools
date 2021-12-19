@@ -7,11 +7,14 @@ Collection of several tools for 3CX.
 * 3cx REST API: https://github.com/adroste/3cx-api
 
 
-# Tools
+# Tools / Features
 
-## 3cx-tools-helper
+## 3cx-tools-server
 
-in progress
+Features:
+* automatic phonebook generation - generates IP phone compatible phonebook that includes all saved phone numbers
+  * supported manufacturers (yet): yealink
+* automatic install of realtime call overview panel
 
 ---
 

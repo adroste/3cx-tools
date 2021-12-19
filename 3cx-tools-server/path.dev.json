@@ -1,0 +1,7 @@
+{
+  "configJson": "./dev-resources/config.json",
+  "provisioningDir": "./dev-resources/provisioning",
+  "serviceInstallPath": "./dev-resources/3cx-tools-server.service",
+  "webclientCallOverviewPanelBuildDir": "../webclient-realtime-call-overview-panel/build/",
+  "webclientDir": "./dev-resources/webclient"
+}
