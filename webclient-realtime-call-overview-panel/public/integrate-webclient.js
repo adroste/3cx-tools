@@ -13,7 +13,9 @@
       const script = document.createElement('script');
       script.src = scriptSrc[1];
 
-      document.body.appendChild(css);
-      document.body.appendChild(script);
+      setTimeout(() => {
+        document.body.appendChild(css);
+        document.body.appendChild(script);
+      }, 1000);
     });
 })();

@@ -23,7 +23,7 @@ Tested on: v18.0.2.307
 
 ### Automatic
 
-Use the 3cx-tools-helper: https://github.com/adroste/3cx-tools
+Use the 3cx-tools-server: https://github.com/adroste/3cx-tools
 
 ### Manual
 
