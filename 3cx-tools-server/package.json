@@ -29,6 +29,7 @@
   "scripts": {
     "start": "NODE_ENV=production node build/src/main.js",
     "dev": "NODE_ENV=development ts-node src/main.ts",
+    "dev:service": "NODE_ENV=development ts-node src/main.ts run-as-service",
     "prebuild": "npm run lint",
     "build": "tsc",
     "build:watch": "tsc -w",
@@ -47,6 +48,7 @@
   },
   "homepage": "https://github.com/adroste/3cx-tools",
   "dependencies": {
+    "commander": "^8.3.0",
     "console-stamp": "^3.0.3",
     "fs-extra": "^10.0.0",
     "lodash": "^4.17.21",

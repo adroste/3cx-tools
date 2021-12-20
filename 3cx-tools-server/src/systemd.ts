@@ -1,7 +1,9 @@
-import { exec as cbExec } from 'child_process';
+import { exec as cbExec, execSync } from 'child_process';
+import { unlink, writeFile } from 'fs/promises';
+
 import { getPath } from './path';
 import { promisify } from 'util';
-import { writeFile } from 'fs/promises';
+
 const exec = promisify(cbExec);
 
 const TAG = '[Service Installer]';
@@ -14,11 +16,10 @@ After=network.target
 
 [Service]
 Environment=NODE_ENV=production
-Environment=IS_SERVICE=true
 Type=simple
 User=root
 WorkingDirectory=${process.cwd()}
-ExecStart=/usr/bin/npm run start
+ExecStart=/usr/bin/npm run start -- run-as-service
 Restart=on-failure
 
 [Install]
@@ -27,14 +28,6 @@ WantedBy=multi-user.target
 
 
 export async function installAsService() {
-  if (process.env.IS_SERVICE) {
-    console.log(TAG, 'running as service.');
-    return;
-  } else if (process.env.NO_SERVICE) {
-    console.log(TAG, 'service init skipped');
-    return;
-  }
-
   console.log(TAG, 'installing as systemd service');
   await writeFile(getPath().serviceInstallPath, serviceTemplate, 'utf-8');
 
@@ -47,6 +40,28 @@ export async function installAsService() {
   await exec('sudo systemctl stop 3cx-tools-server');
   await exec('sudo systemctl start 3cx-tools-server');
   await exec('sudo systemctl enable 3cx-tools-server');
-  console.log(TAG, 'systemd service enabled and started, exiting this instance.\nView service logs by typing: sudo journalctl -u 3cx-tools-server.service');
-  process.exit();
+  console.log(TAG, 'systemd service enabled and started.\nView service logs by typing: sudo journalctl -u 3cx-tools-server.service');
+}
+
+export async function uninstallService() {
+  console.log(TAG, 'removing systemd service');
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log(TAG, 'skipped systemd changes because app runs in development mode (NODE_ENV == "development")');
+  } else {
+    await exec('sudo systemctl stop 3cx-tools-server');
+    await exec('sudo systemctl disable 3cx-tools-server');
+  }
+
+  await unlink(getPath().serviceInstallPath);
+  console.log(TAG, 'systemd service stopped, disabled and removed.');
+}
+
+export function checkIfServiceIsRunning() {
+  try {
+    execSync('systemctl is-active --quiet service', { stdio: 'ignore' });
+    return true; // exit code 0 => service is running;
+  } catch (_) {
+    return false; // other exit codes
+  }
 }

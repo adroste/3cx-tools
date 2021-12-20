@@ -12,8 +12,9 @@ Collection of several tools for 3CX.
 ## 3cx-tools-server
 
 Features:
-* automatic phonebook generation - generates IP phone compatible phonebook that includes all saved phone numbers
+* automatic phonebook generation - generates IP phone compatible phonebooks including multiple saved phone numbers
   * supported manufacturers (yet): yealink, fanvil, snom
+  * *Background: 3CX only generates phonebooks including the 'mobile' number*
 * automatic install of realtime call overview panel
 
 ---
