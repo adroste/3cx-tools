@@ -5,11 +5,11 @@ const tslib_1 = require("tslib");
 const fs_1 = require("fs");
 const promises_1 = require("fs/promises");
 const fs_extra_1 = require("fs-extra");
+const lodash_1 = require("lodash");
 const child_process_1 = require("child_process");
 const path_1 = require("./path");
 const path_2 = require("path");
 const util_1 = require("util");
-const lodash_1 = require("lodash");
 const TAG = '[Call Overview Panel]';
 function copyBuild() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
@@ -32,9 +32,9 @@ function patchIndexHtml() {
 let fileWatcher;
 function registerFileWatcher() {
     console.log(TAG, 'watching for file modifications...');
-    const throttledInstall = (0, lodash_1.throttle)(installWebclientCallOverviewPanel, 3000);
+    const debouncedInstall = (0, lodash_1.debounce)((0, lodash_1.debounce)(installWebclientCallOverviewPanel, 10000, { leading: true, trailing: false }), 3000);
     fileWatcher = (0, fs_1.watch)((0, path_1.getPath)().webclientDir, () => {
-        throttledInstall();
+        debouncedInstall();
     });
 }
 function installWebclientCallOverviewPanel() {

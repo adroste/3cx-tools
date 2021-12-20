@@ -2,11 +2,11 @@ import { FSWatcher, watch } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
 
 import { copy } from 'fs-extra';
+import { debounce } from 'lodash';
 import { exec } from 'child_process';
 import { getPath } from './path';
 import { join } from 'path';
 import { promisify } from 'util';
-import { throttle } from 'lodash';
 
 const TAG = '[Call Overview Panel]';
 
@@ -30,9 +30,14 @@ async function patchIndexHtml() {
 let fileWatcher: FSWatcher;
 function registerFileWatcher() {
   console.log(TAG, 'watching for file modifications...')
-  const throttledInstall = throttle(installWebclientCallOverviewPanel, 10000);
+  // The "Double Debounce":
+  // outer debounce: group and wait for multiple file changes in directory
+  const debouncedInstall = debounce(
+    // inner debounce: prevent infinite recursion when writing a watched file/folder
+    debounce(installWebclientCallOverviewPanel, 10000, { leading: true, trailing: false })
+  , 3000);
   fileWatcher = watch(getPath().webclientDir, () => {
-    throttledInstall();
+    debouncedInstall();
   });
 }
 

@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.runPhonebookPatcher = exports.PHONE_NUMBER_PROPS = void 0;
 const tslib_1 = require("tslib");
 const fs_1 = require("fs");
+const lodash_1 = require("lodash");
 const database_1 = require("./database");
 const path_1 = require("./path");
 const path_2 = require("path");
 const promises_1 = require("fs/promises");
-const lodash_1 = require("lodash");
 const phonebook_yealink_1 = require("./phonebook-yealink");
 exports.PHONE_NUMBER_PROPS = [
     'mobile',
@@ -55,17 +55,15 @@ let fileWatcher;
 function registerFileWatcher() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         console.log(TAG, 'watching phonebook files...');
-        const throttledRun = (0, lodash_1.throttle)(runPhonebookPatcher, 3000);
+        const debouncedRun = (0, lodash_1.debounce)((0, lodash_1.debounce)(runPhonebookPatcher, 10000, { leading: true, trailing: false }), 3000);
         fileWatcher = (0, fs_1.watch)(yield getProvisionDirPath(), (_, filename) => {
-            console.log('pwatcher1', filename);
             if (filename.includes('phonebook'))
-                throttledRun();
+                debouncedRun();
         });
     });
 }
 function runPhonebookPatcher() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        console.log('runp');
         const provisionDir = yield getProvisionDirPath();
         const phonebook = yield queryPhonebook();
         yield (0, phonebook_yealink_1.updatePhonebookYealink)(phonebook, provisionDir);

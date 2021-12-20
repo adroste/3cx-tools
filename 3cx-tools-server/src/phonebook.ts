@@ -1,10 +1,10 @@
 import { FSWatcher, watch } from 'fs';
 
+import { debounce } from 'lodash';
 import { getDb } from './database';
 import { getPath } from './path';
 import { join } from 'path';
 import { readdir } from 'fs/promises';
-import { throttle } from 'lodash';
 import { updatePhonebookYealink } from './phonebook-yealink';
 
 interface PhonebookRow {
@@ -94,15 +94,20 @@ async function queryPhonebook() {
 
 let fileWatcher: FSWatcher;
 async function registerFileWatcher() {
-  console.log(TAG, 'watching phonebook files...')
-  const throttledRun = throttle(runPhonebookPatcher, 10000);
+  console.log(TAG, 'watching phonebook files...');
+  // The "Double Debounce":
+  // outer debounce: group and wait for multiple file changes in directory
+  const debouncedRun = debounce(
+    // inner debounce: prevent infinite recursion when writing a watched file/folder
+    debounce(runPhonebookPatcher, 10000, { leading: true, trailing: false })
+  , 3000);
   // we update the phonebooks everytime we detect a change from 3cx
   // this works because as of v18.0.3 3cx also updates all the 
   // phonebook files when we change a hidden number of a contact 
   // (like the business or private ones)
   fileWatcher = watch(await getProvisionDirPath(), (_, filename) => {
     if (filename.includes('phonebook'))
-      throttledRun();
+      debouncedRun();
   });
 }
 
