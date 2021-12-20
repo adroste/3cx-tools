@@ -5,6 +5,7 @@ import { getDb } from './database';
 import { getPath } from './path';
 import { join } from 'path';
 import { readdir } from 'fs/promises';
+import { updatePhonebookFanvil } from './phonebook-fanvil';
 import { updatePhonebookYealink } from './phonebook-yealink';
 
 interface PhonebookRow {
@@ -48,14 +49,15 @@ export interface PhonebookEntry {
 
 /**
  * All props of PhonebookEntry that include phone numbers.
- * Order of display.
+ * Order by importance / display order.
+ * These numbers are copied to the telephone (if possible).
  */ 
 export const PHONE_NUMBER_PROPS = [
   'mobile',
-  'mobile2',
   'private',
-  'private2',
   'business',
+  'mobile2',
+  'private2',
   'business2',
   'extra',
 ] as const;
@@ -116,6 +118,7 @@ export async function runPhonebookPatcher() {
   const phonebook = await queryPhonebook();
 
   await updatePhonebookYealink(phonebook, provisionDir);
+  await updatePhonebookFanvil(phonebook, provisionDir);
 
   console.log(TAG, 'phonebooks updated');
   if (!fileWatcher)
