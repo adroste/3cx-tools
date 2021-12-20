@@ -6,6 +6,7 @@ import { getPath } from './path';
 import { join } from 'path';
 import { readdir } from 'fs/promises';
 import { updatePhonebookFanvil } from './phonebook-fanvil';
+import { updatePhonebookSnom } from './phonebook-snom';
 import { updatePhonebookYealink } from './phonebook-yealink';
 
 interface PhonebookRow {
@@ -119,6 +120,7 @@ export async function runPhonebookPatcher() {
 
   await updatePhonebookYealink(phonebook, provisionDir);
   await updatePhonebookFanvil(phonebook, provisionDir);
+  await updatePhonebookSnom(phonebook, provisionDir);
 
   console.log(TAG, 'phonebooks updated');
   if (!fileWatcher)

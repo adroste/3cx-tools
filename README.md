@@ -13,7 +13,7 @@ Collection of several tools for 3CX.
 
 Features:
 * automatic phonebook generation - generates IP phone compatible phonebook that includes all saved phone numbers
-  * supported manufacturers (yet): yealink
+  * supported manufacturers (yet): yealink, fanvil, snom
 * automatic install of realtime call overview panel
 
 ---
