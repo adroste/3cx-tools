@@ -11,8 +11,28 @@ sudo apt install -y nodejs
 
 Verify that it's working with `node --version`.
 
-### 2. Install pm2
+### 2. Install git
 
+```bash
+sudo apt install -y git
 ```
-sudo npm install pm2@latest -g
+
+### 3. Clone the repo and jump into the 3cx-tools-server dir
+
+```bash
+git clone https://github.com/adroste/3cx-tools.git
+cd 3cx-tools/3cx-tools-server/
+```
+
+### 4. Install dependencies
+
+```bash
+npm install --only=production
+```
+
+### 5. Run the application
+
+```bash
+sudo chown root .
+sudo npm run start
 ```
