@@ -105,3 +105,6 @@ dist
 
 # mac
 .DS_store
+
+# Visual Studio Code
+.vscode
