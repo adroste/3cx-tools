@@ -33,10 +33,10 @@ function getNumberType(key: keyof PhonebookEntry): SnomNumberType {
 function getContactInfoXml(entry: PhonebookEntry) {
   let contactInfoXml = '';
 
-  if (entry.firstname)
-    contactInfoXml += `    <first_name>${entry.firstname}</first_name>\n`;
-  if (entry.lastname)
-    contactInfoXml += `    <last_name>${entry.lastname}</last_name>\n`;
+  if (entry.firstName)
+    contactInfoXml += `    <first_name>${entry.firstName}</first_name>\n`;
+  if (entry.lastName)
+    contactInfoXml += `    <last_name>${entry.lastName}</last_name>\n`;
   if (entry.company)
     contactInfoXml += `    <organization>${entry.company}</organization>\n`;
   if (entry.email)
@@ -50,7 +50,7 @@ export function buildPhonebookSnom(phonebook: PhonebookEntry[]) {
   for (const entry of phonebook) {
     const usedKeys = PHONE_NUMBER_PROPS.filter(key => entry[key]);
     const phoneNumberCount = usedKeys.length;
-    if ((!entry.firstname && !entry.lastname) || phoneNumberCount === 0)
+    if ((!entry.firstName && !entry.lastName) || phoneNumberCount === 0)
       continue;
 
     if (phoneNumberCount === 1) {

@@ -8,17 +8,41 @@ const database_1 = require("./database");
 const path_1 = require("./path");
 const path_2 = require("path");
 const promises_1 = require("fs/promises");
+const phonebook_fanvil_1 = require("./phonebook-fanvil");
+const phonebook_snom_1 = require("./phonebook-snom");
 const phonebook_yealink_1 = require("./phonebook-yealink");
+const TAG = '[Phonebook]';
 exports.PHONE_NUMBER_PROPS = [
     'mobile',
-    'mobile2',
     'private',
-    'private2',
     'business',
+    'mobile2',
+    'private2',
     'business2',
     'extra',
 ];
-const TAG = '[Phonebook]';
+function queryDisplayNameFormat() {
+    var _a;
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        const res = yield (0, database_1.getDb)().query('SELECT * FROM public.parameter WHERE idparameter=163');
+        const rows = res.rows;
+        return ((_a = rows[0]) === null || _a === void 0 ? void 0 : _a.value) === '0'
+            ? 'FirstNameLastName'
+            : 'LastNameFirstName';
+    });
+}
+function getDisplayName(firstName, lastName, format) {
+    let parts, sep;
+    if (format === 'FirstNameLastName') {
+        parts = [firstName, lastName];
+        sep = ' ';
+    }
+    else {
+        parts = [lastName, firstName];
+        sep = ', ';
+    }
+    return parts.filter(x => x).join(sep);
+}
 function getProvisionDirPath() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const files = yield (0, promises_1.readdir)((0, path_1.getPath)().provisioningDir, { withFileTypes: true });
@@ -32,10 +56,12 @@ function queryPhonebook() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const res = yield (0, database_1.getDb)().query('SELECT * FROM public.phonebook');
         const rows = res.rows;
+        const displayFormat = yield queryDisplayNameFormat();
         const entries = rows.map(r => ({
             id: r.idphonebook,
-            firstname: r.firstname,
-            lastname: r.lastname,
+            displayName: getDisplayName(r.firstname, r.lastname, displayFormat),
+            firstName: r.firstname,
+            lastName: r.lastname,
             company: r.company,
             mobile: r.phonenumber,
             mobile2: r.pv_an0,
@@ -67,6 +93,8 @@ function runPhonebookPatcher() {
         const provisionDir = yield getProvisionDirPath();
         const phonebook = yield queryPhonebook();
         yield (0, phonebook_yealink_1.updatePhonebookYealink)(phonebook, provisionDir);
+        yield (0, phonebook_fanvil_1.updatePhonebookFanvil)(phonebook, provisionDir);
+        yield (0, phonebook_snom_1.updatePhonebookSnom)(phonebook, provisionDir);
         console.log(TAG, 'phonebooks updated');
         if (!fileWatcher)
             registerFileWatcher();

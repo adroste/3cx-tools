@@ -18,11 +18,10 @@ function buildPhonebookYealink(phonebook) {
     let body = '';
     for (const entry of phonebook) {
         const phonenumbers = phonebook_1.PHONE_NUMBER_PROPS.map(p => entry[p]).filter(x => x);
-        if ((!entry.firstname && !entry.lastname) || phonenumbers.length === 0)
+        if (!entry.displayName || phonenumbers.length === 0)
             continue;
-        const name = [entry.lastname, entry.firstname].filter(x => x).join(' ');
         body += '  <DirectoryEntry>\n';
-        body += `   <Name>${name}</Name>\n`;
+        body += `   <Name>${entry.displayName}</Name>\n`;
         phonenumbers.forEach(nr => {
             body += `   <Telephone>${nr}</Telephone>\n`;
         });

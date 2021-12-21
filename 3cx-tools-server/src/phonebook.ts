@@ -9,6 +9,8 @@ import { updatePhonebookFanvil } from './phonebook-fanvil';
 import { updatePhonebookSnom } from './phonebook-snom';
 import { updatePhonebookYealink } from './phonebook-yealink';
 
+const TAG = '[Phonebook]';
+
 interface PhonebookRow {
   idphonebook: number,
   firstname?: string,
@@ -31,10 +33,19 @@ interface PhonebookRow {
   pv_contact_image?: string
 }
 
+interface ParameterRow {
+  name: string,
+  idparameter: number,
+  description?: string,
+  parametertype: number,
+  value?: string,
+}
+
 export interface PhonebookEntry {
   id: number,
-  firstname?: string,
-  lastname?: string,
+  displayName?: string,
+  firstName?: string,
+  lastName?: string,
   company?: string,
   mobile?: string,
   mobile2?: string,
@@ -63,7 +74,27 @@ export const PHONE_NUMBER_PROPS = [
   'extra',
 ] as const;
 
-const TAG = '[Phonebook]';
+export type DisplayNameFormat = 'FirstNameLastName' | 'LastNameFirstName';
+
+async function queryDisplayNameFormat(): Promise<DisplayNameFormat> {
+  const res = await getDb().query('SELECT * FROM public.parameter WHERE idparameter=163');
+  const rows = res.rows as ParameterRow[];
+  return rows[0]?.value === '0'
+    ? 'FirstNameLastName'
+    : 'LastNameFirstName';
+}
+
+function getDisplayName(firstName: string | undefined, lastName: string | undefined, format: DisplayNameFormat): string {
+  let parts: (string | undefined)[], sep: string;
+  if (format === 'FirstNameLastName') {
+    parts = [firstName, lastName];
+    sep = ' ';
+  } else {
+    parts = [lastName, firstName];
+    sep = ', ';
+  }
+  return parts.filter(x=>x).join(sep);
+}
 
 async function getProvisionDirPath() {
   const files = await readdir(getPath().provisioningDir, { withFileTypes: true });
@@ -76,10 +107,12 @@ async function getProvisionDirPath() {
 async function queryPhonebook() {
   const res = await getDb().query('SELECT * FROM public.phonebook');
   const rows = res.rows as PhonebookRow[];
+  const displayFormat = await queryDisplayNameFormat();
   const entries: PhonebookEntry[] = rows.map(r => ({
     id: r.idphonebook,
-    firstname: r.firstname,
-    lastname: r.lastname,
+    displayName: getDisplayName(r.firstname, r.lastname, displayFormat),
+    firstName: r.firstname,
+    lastName: r.lastname,
     company: r.company,
     mobile: r.phonenumber,
     mobile2: r.pv_an0,

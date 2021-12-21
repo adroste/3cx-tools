@@ -18,13 +18,11 @@ export function buildPhonebookYealink(phonebook: PhonebookEntry[]) {
   let body = '';
   for (const entry of phonebook) {
     const phonenumbers = PHONE_NUMBER_PROPS.map(p => entry[p]).filter(x => x);
-    if ((!entry.firstname && !entry.lastname) || phonenumbers.length === 0)
+    if (!entry.displayName || phonenumbers.length === 0)
       continue;
 
-    // todo read display settings from 3cx
-    const name = [entry.lastname, entry.firstname].filter(x=>x).join(' ');
     body += '  <DirectoryEntry>\n';
-    body += `   <Name>${name}</Name>\n`;
+    body += `   <Name>${entry.displayName}</Name>\n`;
     phonenumbers.forEach(nr => {
       body += `   <Telephone>${nr}</Telephone>\n`;
     });
