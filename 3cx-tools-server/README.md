@@ -30,9 +30,9 @@ cd 3cx-tools/3cx-tools-server/
 npm install --only=production
 ```
 
-### 5. Run the application
+### 5. Install the service
 
 ```bash
 sudo chown root .
-sudo npm run start
+sudo npm run start -- install
 ```
