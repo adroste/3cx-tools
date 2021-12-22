@@ -36,3 +36,17 @@ npm install --only=production
 sudo chown root .
 sudo npm run start -- install
 ```
+
+# Development hints
+
+Forward your 3CX ports to your dev machine, e.g. using ssh:
+```bash
+ssh -L 5432:127.0.0.1:5432 \
+  -L 5000:127.0.0.1:5000 \
+  -L 5001:127.0.0.1:5001 \
+  root@my3cxInstance
+```
+Ports:
+* 5432 Postgres
+* 5000 Http Backend
+* 5001 Https Backend

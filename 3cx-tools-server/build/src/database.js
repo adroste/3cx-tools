@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initDb = exports.getDb = void 0;
+exports.closeDb = exports.initDb = exports.getDb = void 0;
 const tslib_1 = require("tslib");
 const pg_1 = require("pg");
 const path_1 = require("./path");
@@ -25,4 +25,10 @@ function initDb() {
     });
 }
 exports.initDb = initDb;
+function closeDb() {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return pool.end();
+    });
+}
+exports.closeDb = closeDb;
 //# sourceMappingURL=database.js.map

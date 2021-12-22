@@ -34,8 +34,8 @@
     "build": "tsc",
     "build:watch": "tsc -w",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "NODE_ENV=development jest",
+    "test:watch": "NODE_ENV=development jest --watch"
   },
   "repository": {
     "type": "git",
@@ -48,6 +48,7 @@
   },
   "homepage": "https://github.com/adroste/3cx-tools",
   "dependencies": {
+    "@adroste/3cx-api": "^0.36.1",
     "commander": "^8.3.0",
     "console-stamp": "^3.0.3",
     "fs-extra": "^10.0.0",
