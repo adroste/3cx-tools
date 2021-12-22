@@ -28,5 +28,8 @@ export async function initDb() {
     password: tcxConfig.DbPassword,
     port: parseInt(tcxConfig.DbPort),
   });
+}
 
+export async function closeDb() {
+  return pool.end();
 }
