@@ -77,7 +77,7 @@ export const PHONE_NUMBER_PROPS = [
 export type DisplayNameFormat = 'FirstNameLastName' | 'LastNameFirstName';
 
 async function queryDisplayNameFormat(): Promise<DisplayNameFormat> {
-  const res = await getDb().query(`SELECT * FROM public.parameter WHERE name='PHONEBOOK_LAST_FIRST'`);
+  const res = await getDb().query(`SELECT value FROM public.parameter WHERE name='PHONEBOOK_LAST_FIRST'`);
   const rows = res.rows as ParameterRow[];
   return rows[0]?.value === '0'
     ? 'FirstNameLastName'
