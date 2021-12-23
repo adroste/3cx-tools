@@ -9,6 +9,7 @@ const database_1 = require("./database");
 const ws_api_1 = require("./api/ws-api");
 const webclient_call_overview_panel_1 = require("./webclient-call-overview-panel");
 const config_1 = require("./config");
+const active_calls_1 = require("./api/active-calls");
 const phonebook_1 = require("./phonebook");
 const banner = String.raw `
    _____ _______  __    ______            __    
@@ -50,6 +51,7 @@ program
     (0, phonebook_1.runPhonebookPatcher)();
     yield (0, connection_1.connectTo3cxApi)();
     yield (0, ws_api_1.initWsApi)();
+    (0, active_calls_1.monitorActiveCalls)();
 }));
 (() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     yield (0, config_1.loadConfig)();

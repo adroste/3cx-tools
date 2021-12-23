@@ -1,11 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initWsApi = exports.io = void 0;
+exports.initWsApi = exports.io = exports.SEND_MSG = exports.RECV_MSG = void 0;
 const tslib_1 = require("tslib");
 const http = require("http");
+const active_calls_1 = require("./active-calls");
 const socket_io_1 = require("socket.io");
 const config_1 = require("../config");
 const TAG = '[Websocket API]';
+exports.RECV_MSG = {
+    subscribeActiveCalls: 'subscribeActiveCalls',
+    unsubscribeActiveCalls: 'unsubscribeActiveCalls',
+    subscribeCallHistory: 'subscribeCallHistory',
+    unsubscribeCallHistory: 'unsubscribeCallHistory',
+};
+exports.SEND_MSG = {
+    activeCalls: 'activeCalls',
+    callHistory: 'callHistory',
+};
 let httpServer;
 function promisedHttpListen(server, port) {
     return new Promise((resolve, reject) => {
@@ -27,7 +38,21 @@ function initWsApi() {
 exports.initWsApi = initWsApi;
 function setListener() {
     exports.io.on('connection', socket => {
-        console.log('Socket connected: %s', socket.id);
+        let subscribedActiveCalls = false;
+        function sendActiveCalls(activeCalls) {
+            socket.emit(exports.SEND_MSG.activeCalls, activeCalls);
+        }
+        socket.on(exports.RECV_MSG.subscribeActiveCalls, () => {
+            if (subscribedActiveCalls)
+                return;
+            subscribedActiveCalls = true;
+            (0, active_calls_1.onActiveCallsChange)(sendActiveCalls);
+            sendActiveCalls((0, active_calls_1.getActiveCalls)());
+        });
+        socket.on(exports.RECV_MSG.unsubscribeActiveCalls, () => {
+            (0, active_calls_1.offActiveCallsChange)(sendActiveCalls);
+            subscribedActiveCalls = false;
+        });
     });
 }
 //# sourceMappingURL=ws-api.js.map
