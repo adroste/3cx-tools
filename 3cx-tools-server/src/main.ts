@@ -3,8 +3,9 @@ import { checkIfServiceIsRunning, installAsService, uninstallService } from './s
 import { Command } from 'commander';
 import consoleStamp from 'console-stamp';
 import { initDb } from './database';
+import { initWsApi } from './api/ws-api';
 import { installWebclientCallOverviewPanel } from './webclient-call-overview-panel';
-import { loadPathConfig } from './path';
+import { loadConfig } from './config';
 import { runPhonebookPatcher } from './phonebook';
 
 const banner = String.raw`
@@ -21,6 +22,14 @@ console.log('\n');
 consoleStamp(console); // add timestamp to log output
 
 const program = new Command();
+program
+  .name("npm run start --")
+  .usage("[command]");
+
+program.addHelpText('after', `
+Example call:
+  $ npm run start -- install`);
+
 program
   .command('install')
   .description('Installs service (systemd)')
@@ -43,9 +52,10 @@ program
     await initDb();
     installWebclientCallOverviewPanel();
     runPhonebookPatcher();
+    await initWsApi();
   });
 
 (async () => {
-  await loadPathConfig();
+  await loadConfig();
   program.parse();
 })();

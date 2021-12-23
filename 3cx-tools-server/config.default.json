@@ -1,7 +1,8 @@
 {
-  "configJson": "/var/lib/3cxpbx/Bin/config.json",
+  "nginxSnippetsDir": "/var/lib/3cxpbx/Bin/nginx/conf/snippets",
+  "pbxConfigJsonFile": "/var/lib/3cxpbx/Bin/config.json",
   "provisioningDir": "/var/lib/3cxpbx/Instance1/Data/Http/Interface/provisioning",
-  "serviceInstallPath": "/lib/systemd/system/3cx-tools-server.service",
+  "serviceInstallFile": "/lib/systemd/system/3cx-tools-server.service",
   "webclientCallOverviewPanelBuildDir": "../webclient-realtime-call-overview-panel/build/",
   "webclientDir": "/var/lib/3cxpbx/Data/Http/wwwroot/webclient"
 }

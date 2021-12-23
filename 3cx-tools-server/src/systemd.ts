@@ -1,7 +1,7 @@
 import { exec as cbExec, execSync } from 'child_process';
 import { unlink, writeFile } from 'fs/promises';
 
-import { getPath } from './path';
+import { getConfig } from './config';
 import { promisify } from 'util';
 
 const exec = promisify(cbExec);
@@ -29,7 +29,7 @@ WantedBy=multi-user.target
 
 export async function installAsService() {
   console.log(TAG, 'installing as systemd service');
-  await writeFile(getPath().serviceInstallPath, serviceTemplate, 'utf-8');
+  await writeFile(getConfig().serviceInstallFile, serviceTemplate, 'utf-8');
 
   if (process.env.NODE_ENV === 'development') {
     console.log(TAG, 'skipped systemd init because app runs in development mode (NODE_ENV == "development")');
@@ -53,7 +53,7 @@ export async function uninstallService() {
     await exec('sudo systemctl disable 3cx-tools-server');
   }
 
-  await unlink(getPath().serviceInstallPath);
+  await unlink(getConfig().serviceInstallFile);
   console.log(TAG, 'systemd service stopped, disabled and removed.');
 }
 

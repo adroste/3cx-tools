@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { getPath } from './path';
+import { getConfig } from './config';
 import { readJson } from 'fs-extra';
 
 interface TcxConfig {
@@ -19,7 +19,7 @@ export function getDb() {
 }
 
 export async function initDb() {
-  const tcxConfig = await readJson(getPath().configJson) as TcxConfig;
+  const tcxConfig = await readJson(getConfig().pbxConfigJsonFile) as TcxConfig;
 
   pool = new Pool({
     user: tcxConfig.DbUser,

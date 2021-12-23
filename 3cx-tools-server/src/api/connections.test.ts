@@ -1,10 +1,10 @@
 import { closeDb, initDb } from '../database';
 
 import { connectTo3cxApi } from './connection';
-import { loadPathConfig } from '../path';
+import { loadConfig } from '../config';
 
 beforeAll(async () => {
-  await loadPathConfig();
+  await loadConfig();
   await initDb();
 });
 

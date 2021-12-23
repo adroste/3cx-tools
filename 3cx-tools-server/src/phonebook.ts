@@ -1,8 +1,8 @@
 import { FSWatcher, watch } from 'fs';
 
 import { debounce } from 'lodash';
+import { getConfig } from './config';
 import { getDb } from './database';
-import { getPath } from './path';
 import { join } from 'path';
 import { readdir } from 'fs/promises';
 import { updatePhonebookFanvil } from './phonebook-fanvil';
@@ -97,11 +97,11 @@ function getDisplayName(firstName: string | undefined, lastName: string | undefi
 }
 
 async function getProvisionDirPath() {
-  const files = await readdir(getPath().provisioningDir, { withFileTypes: true });
+  const files = await readdir(getConfig().provisioningDir, { withFileTypes: true });
   const dirs = files.filter(f => f.isDirectory());
   if (dirs.length !== 1)
     throw new Error('provisioning dir does not contain exactly one directory');
-  return join(getPath().provisioningDir, dirs[0].name);
+  return join(getConfig().provisioningDir, dirs[0].name);
 }
 
 async function queryPhonebook() {
