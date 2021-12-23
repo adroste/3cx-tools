@@ -4,9 +4,9 @@ exports.runPhonebookPatcher = exports.PHONE_NUMBER_PROPS = void 0;
 const tslib_1 = require("tslib");
 const fs_1 = require("fs");
 const lodash_1 = require("lodash");
+const config_1 = require("./config");
 const database_1 = require("./database");
-const path_1 = require("./path");
-const path_2 = require("path");
+const path_1 = require("path");
 const promises_1 = require("fs/promises");
 const phonebook_fanvil_1 = require("./phonebook-fanvil");
 const phonebook_snom_1 = require("./phonebook-snom");
@@ -45,11 +45,11 @@ function getDisplayName(firstName, lastName, format) {
 }
 function getProvisionDirPath() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        const files = yield (0, promises_1.readdir)((0, path_1.getPath)().provisioningDir, { withFileTypes: true });
+        const files = yield (0, promises_1.readdir)((0, config_1.getConfig)().provisioningDir, { withFileTypes: true });
         const dirs = files.filter(f => f.isDirectory());
         if (dirs.length !== 1)
             throw new Error('provisioning dir does not contain exactly one directory');
-        return (0, path_2.join)((0, path_1.getPath)().provisioningDir, dirs[0].name);
+        return (0, path_1.join)((0, config_1.getConfig)().provisioningDir, dirs[0].name);
     });
 }
 function queryPhonebook() {

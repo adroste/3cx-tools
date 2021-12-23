@@ -2,7 +2,7 @@
   "nginxSnippetsDir": "./dev-resources/nginx-snippets/",
   "pbxConfigJsonFile": "./dev-resources/config.json",
   "provisioningDir": "./dev-resources/provisioning",
-  "serviceInstallFile": "./dev-resources/3cx-tools-server.service",
-  "webclientCallOverviewPanelBuildDir": "../webclient-realtime-call-overview-panel/build/",
-  "webclientDir": "./dev-resources/webclient"
+  "webclientDir": "./dev-resources/webclient",
+
+  "serviceInstallFile": "./dev-resources/3cx-tools-server.service"
 }

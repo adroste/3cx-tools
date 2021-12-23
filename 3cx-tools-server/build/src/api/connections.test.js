@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const database_1 = require("../database");
 const connection_1 = require("./connection");
-const path_1 = require("../path");
+const config_1 = require("../config");
 beforeAll(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
-    yield (0, path_1.loadPathConfig)();
+    yield (0, config_1.loadConfig)();
     yield (0, database_1.initDb)();
 }));
 describe('3cx REST Api', () => {

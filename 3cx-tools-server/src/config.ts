@@ -3,12 +3,19 @@ import { readJson } from 'fs-extra';
 const TAG = '[Config loader]';
 
 export interface Config {
+  // PBX paths
   nginxSnippetsDir: string,
   pbxConfigJsonFile: string,
   provisioningDir: string,
+  webclientDir: string,
+
+  // app paths
   serviceInstallFile: string,
   webclientCallOverviewPanelBuildDir: string,
-  webclientDir: string,
+
+  // runtime config
+  activeCallsCheckIntervalMs: number,
+  wsApiPort: number,
 }
 
 let config: Config;

@@ -4,7 +4,7 @@ exports.checkIfServiceIsRunning = exports.uninstallService = exports.installAsSe
 const tslib_1 = require("tslib");
 const child_process_1 = require("child_process");
 const promises_1 = require("fs/promises");
-const path_1 = require("./path");
+const config_1 = require("./config");
 const util_1 = require("util");
 const exec = (0, util_1.promisify)(child_process_1.exec);
 const TAG = '[Service Installer]';
@@ -28,7 +28,7 @@ WantedBy=multi-user.target
 function installAsService() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         console.log(TAG, 'installing as systemd service');
-        yield (0, promises_1.writeFile)((0, path_1.getPath)().serviceInstallPath, serviceTemplate, 'utf-8');
+        yield (0, promises_1.writeFile)((0, config_1.getConfig)().serviceInstallFile, serviceTemplate, 'utf-8');
         if (process.env.NODE_ENV === 'development') {
             console.log(TAG, 'skipped systemd init because app runs in development mode (NODE_ENV == "development")');
             return;
@@ -51,7 +51,7 @@ function uninstallService() {
             yield exec('sudo systemctl stop 3cx-tools-server');
             yield exec('sudo systemctl disable 3cx-tools-server');
         }
-        yield (0, promises_1.unlink)((0, path_1.getPath)().serviceInstallPath);
+        yield (0, promises_1.unlink)((0, config_1.getConfig)().serviceInstallFile);
         console.log(TAG, 'systemd service stopped, disabled and removed.');
     });
 }

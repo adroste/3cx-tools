@@ -1,6 +1,7 @@
 import { checkIfServiceIsRunning, installAsService, uninstallService } from './systemd';
 
 import { Command } from 'commander';
+import { connectTo3cxApi } from './api/connection';
 import consoleStamp from 'console-stamp';
 import { initDb } from './database';
 import { initWsApi } from './api/ws-api';
@@ -52,6 +53,7 @@ program
     await initDb();
     installWebclientCallOverviewPanel();
     runPhonebookPatcher();
+    await connectTo3cxApi()
     await initWsApi();
   });
 
