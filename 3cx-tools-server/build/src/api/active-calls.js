@@ -6,6 +6,7 @@ const events_1 = require("events");
 const connection_1 = require("./connection");
 const config_1 = require("../config");
 const lodash_1 = require("lodash");
+const TAG = '[Active Calls Monitor]';
 const activeCallsMonitor = new events_1.EventEmitter();
 let checkInterval, activeCalls;
 function checkActiveCalls() {
@@ -24,10 +25,12 @@ function getActiveCalls() {
 exports.getActiveCalls = getActiveCalls;
 function monitorActiveCalls() {
     checkInterval = setInterval(checkActiveCalls, (0, config_1.getConfig)().activeCallsCheckIntervalMs);
+    console.log(TAG, 'started');
 }
 exports.monitorActiveCalls = monitorActiveCalls;
 function stopMonitorActiveCalls() {
     clearInterval(checkInterval);
+    console.log(TAG, 'stopped');
 }
 exports.stopMonitorActiveCalls = stopMonitorActiveCalls;
 function onActiveCallsChange(listener) {

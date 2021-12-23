@@ -4,6 +4,8 @@ import { api } from './connection';
 import { getConfig } from '../config';
 import { isEqual } from 'lodash';
 
+const TAG = '[Active Calls Monitor]';
+
 const activeCallsMonitor = new EventEmitter();
 let checkInterval: NodeJS.Timer, activeCalls: IActiveCalls[];
 
@@ -22,10 +24,12 @@ export function getActiveCalls() {
 export function monitorActiveCalls() {
   checkInterval = setInterval(checkActiveCalls, 
     getConfig().activeCallsCheckIntervalMs);
+  console.log(TAG, 'started');
 }
 
 export function stopMonitorActiveCalls() {
   clearInterval(checkInterval);
+  console.log(TAG, 'stopped');
 }
 
 export function onActiveCallsChange(listener: (activeCalls: IActiveCalls[]) => void) {
