@@ -8,6 +8,7 @@ import { initWsApi } from './api/ws-api';
 import { installWebclientCallOverviewPanel } from './webclient-call-overview-panel';
 import { loadConfig } from './config';
 import { monitorActiveCalls } from './api/active-calls';
+import { monitorCallLogs } from './api/call-logs';
 import { runPhonebookPatcher } from './phonebook';
 
 const banner = String.raw`
@@ -57,6 +58,7 @@ program
     await connectTo3cxApi()
     await initWsApi();
     monitorActiveCalls();
+    monitorCallLogs();
   });
 
 (async () => {

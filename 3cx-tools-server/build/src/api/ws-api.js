@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.initWsApi = exports.io = exports.SEND_MSG = exports.RECV_MSG = void 0;
 const tslib_1 = require("tslib");
 const http = require("http");
+const call_logs_1 = require("./call-logs");
 const active_calls_1 = require("./active-calls");
 const socket_io_1 = require("socket.io");
 const config_1 = require("../config");
@@ -10,12 +11,12 @@ const TAG = '[Websocket API]';
 exports.RECV_MSG = {
     subscribeActiveCalls: 'subscribeActiveCalls',
     unsubscribeActiveCalls: 'unsubscribeActiveCalls',
-    subscribeCallHistory: 'subscribeCallHistory',
-    unsubscribeCallHistory: 'unsubscribeCallHistory',
+    subscribeCallLogs: 'subscribeCallLogs',
+    unsubscribeCallLogs: 'unsubscribeCallLogs',
 };
 exports.SEND_MSG = {
     activeCalls: 'activeCalls',
-    callHistory: 'callHistory',
+    callLogs: 'callLogs',
 };
 let httpServer;
 function promisedHttpListen(server, port) {
@@ -52,6 +53,21 @@ function setListener() {
         socket.on(exports.RECV_MSG.unsubscribeActiveCalls, () => {
             (0, active_calls_1.offActiveCallsChange)(sendActiveCalls);
             subscribedActiveCalls = false;
+        });
+        let subscribedCallLogs = false;
+        function sendCallLogs(callLogs) {
+            socket.emit(exports.SEND_MSG.callLogs, callLogs);
+        }
+        socket.on(exports.RECV_MSG.subscribeCallLogs, () => {
+            if (subscribedCallLogs)
+                return;
+            subscribedCallLogs = true;
+            (0, call_logs_1.onCallLogs)(sendCallLogs);
+            sendCallLogs((0, call_logs_1.getCallLogs)());
+        });
+        socket.on(exports.RECV_MSG.unsubscribeCallLogs, () => {
+            (0, call_logs_1.offCallLogs)(sendCallLogs);
+            subscribedCallLogs = false;
         });
     });
 }

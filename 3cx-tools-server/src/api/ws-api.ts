@@ -1,5 +1,6 @@
 import * as http from 'http';
 
+import { CallLog, getCallLogs, offCallLogs, onCallLogs } from './call-logs';
 import { getActiveCalls, offActiveCallsChange, onActiveCallsChange } from './active-calls';
 
 import { IActiveCalls } from '@adroste/3cx-api';
@@ -11,13 +12,13 @@ const TAG = '[Websocket API]';
 export const RECV_MSG = {
   subscribeActiveCalls: 'subscribeActiveCalls',
   unsubscribeActiveCalls: 'unsubscribeActiveCalls',
-  subscribeCallHistory: 'subscribeCallHistory',
-  unsubscribeCallHistory: 'unsubscribeCallHistory',
+  subscribeCallLogs: 'subscribeCallLogs',
+  unsubscribeCallLogs: 'unsubscribeCallLogs',
 } as const;
 
 export const SEND_MSG = {
   activeCalls: 'activeCalls',
-  callHistory: 'callHistory',
+  callLogs: 'callLogs',
 } as const;
 
 export let io: Server;
@@ -45,6 +46,8 @@ export async function initWsApi() {
 function setListener() {
   io.on('connection', socket => {
 
+    // active calls
+
     let subscribedActiveCalls = false;
 
     function sendActiveCalls(activeCalls: IActiveCalls[]) {
@@ -62,6 +65,28 @@ function setListener() {
     socket.on(RECV_MSG.unsubscribeActiveCalls, () => {
       offActiveCallsChange(sendActiveCalls);
       subscribedActiveCalls = false;
+    });
+
+
+    // call logs
+
+    let subscribedCallLogs = false;
+
+    function sendCallLogs(callLogs: CallLog[]) {
+      socket.emit(SEND_MSG.callLogs, callLogs)
+    }
+
+    socket.on(RECV_MSG.subscribeCallLogs, () => {
+      if (subscribedCallLogs)
+        return; 
+      subscribedCallLogs = true;
+      onCallLogs(sendCallLogs);
+      sendCallLogs(getCallLogs());
+    });
+
+    socket.on(RECV_MSG.unsubscribeCallLogs, () => {
+      offCallLogs(sendCallLogs);
+      subscribedCallLogs = false;
     });
     
   });
