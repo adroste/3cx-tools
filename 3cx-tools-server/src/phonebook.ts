@@ -105,7 +105,9 @@ async function getProvisionDirPath() {
 }
 
 async function queryPhonebook() {
-  const res = await getDb().query('SELECT * FROM public.phonebook');
+  // fkiddn = NULL means company phonebook only
+  // fkiddn is set to a value when it's a value in a private phonebook
+  const res = await getDb().query('SELECT * FROM public.phonebook WHERE fkiddn IS NULL');
   const rows = res.rows as PhonebookRow[];
   const displayFormat = await queryDisplayNameFormat();
   const entries: PhonebookEntry[] = rows.map(r => ({

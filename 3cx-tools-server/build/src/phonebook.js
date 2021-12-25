@@ -54,7 +54,7 @@ function getProvisionDirPath() {
 }
 function queryPhonebook() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        const res = yield (0, database_1.getDb)().query('SELECT * FROM public.phonebook');
+        const res = yield (0, database_1.getDb)().query('SELECT * FROM public.phonebook WHERE fkiddn IS NULL');
         const rows = res.rows;
         const displayFormat = yield queryDisplayNameFormat();
         const entries = rows.map(r => ({
