@@ -129,6 +129,10 @@ async function queryPhonebook() {
     fax: r.pv_an7,
     fax2: r.pv_an8,
   }));
+
+  // sort by displayname (if possible)
+  entries.sort((a, b) => a.displayName?.localeCompare(b.displayName || '') || 0);
+
   return entries;
 }
 
