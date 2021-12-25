@@ -28,7 +28,7 @@ WantedBy=multi-user.target
 
 
 export async function installAsService() {
-  console.log(TAG, 'installing as systemd service');
+  console.log(TAG, `installing as systemd service to "${getConfig().serviceInstallFile}"`);
   await writeFile(getConfig().serviceInstallFile, serviceTemplate, 'utf-8');
 
   if (process.env.NODE_ENV === 'development') {

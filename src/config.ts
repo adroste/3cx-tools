@@ -4,18 +4,18 @@ const TAG = '[Config loader]';
 
 export interface Config {
   // PBX paths
-  nginxSnippetsDir: string,
   pbxConfigJsonFile: string,
   provisioningDir: string,
   webclientDir: string,
 
   // app paths
+  nginxProxySnippetInstallFile: string,
   serviceInstallFile: string,
   webclientCallOverviewPanelBuildDir: string,
 
   // runtime config
   activeCallsCheckIntervalMs: number,
-  wsApiPort: number,
+  httpPort: number,
 }
 
 let config: Config;

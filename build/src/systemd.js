@@ -27,7 +27,7 @@ WantedBy=multi-user.target
 `;
 function installAsService() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        console.log(TAG, 'installing as systemd service');
+        console.log(TAG, `installing as systemd service to "${(0, config_1.getConfig)().serviceInstallFile}"`);
         yield (0, promises_1.writeFile)((0, config_1.getConfig)().serviceInstallFile, serviceTemplate, 'utf-8');
         if (process.env.NODE_ENV === 'development') {
             console.log(TAG, 'skipped systemd init because app runs in development mode (NODE_ENV == "development")');

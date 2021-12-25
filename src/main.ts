@@ -1,4 +1,5 @@
 import { checkIfServiceIsRunning, installAsService, uninstallService } from './systemd';
+import { installNginxProxySnippet, uninstallNginxProxySnippet } from './nginx-proxy-snippet';
 
 import { Command } from 'commander';
 import { connectTo3cxApi } from './api/connection';
@@ -13,6 +14,7 @@ import { monitorPhonebook } from './func/phonebook';
 import { startPhonebookPatcherFanvil } from './func/phonebook-fanvil';
 import { startPhonebookPatcherSnom } from './func/phonebook-snom';
 import { startPhonebookPatcherYealink } from './func/phonebook-yealink';
+import { startWebServer } from './web-server';
 
 const banner = String.raw`
    _____ _______  __    ______            __    
@@ -48,6 +50,7 @@ program
   .description('Stops and removes service (systemd)')
   .action(async () => {
     await uninstallService();
+    await uninstallNginxProxySnippet();
   });
 
 program
@@ -57,10 +60,12 @@ program
     console.log('running as service');
     // core
     await initDb();
+    await installNginxProxySnippet();
+    await startWebServer();
 
     // api
     await connectTo3cxApi()
-    await initWsApi();
+    initWsApi();
 
     // func modules
     await monitorPhonebook();

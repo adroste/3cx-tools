@@ -1,11 +1,9 @@
-import * as http from 'http';
-
 import { CallLog, getCallLogs, offCallLogs, onCallLogs } from '../func/call-logs';
 import { getActiveCalls, offActiveCallsChange, onActiveCallsChange } from '../func/active-calls';
 
 import { IActiveCalls } from '@adroste/3cx-api';
 import { Server } from 'socket.io';
-import { getConfig } from '../config';
+import { httpServer } from '../web-server';
 
 const TAG = '[Websocket API]';
 
@@ -22,24 +20,12 @@ export const SEND_MSG = {
 } as const;
 
 export let io: Server;
-let httpServer: http.Server;
 
-function promisedHttpListen(server: http.Server, port: number) {
-  return new Promise((resolve, reject) => {
-    server.on('listening', resolve);
-    server.on('error', reject);
-    server.listen(port);
+export function initWsApi() {
+  io = new Server(httpServer, {
+    path: '/3cx-tools/socket.io'
   });
-}
-
-export async function initWsApi() {
-  httpServer = http.createServer(); 
-  io = new Server(httpServer);
-
-  const port = getConfig().wsApiPort;
-  await promisedHttpListen(httpServer, port);
-  console.log(TAG, `WS/HTTP server listening on port ${port}`);
-
+  console.log(TAG, `WS api listening...`);
   setListener();
 }
 

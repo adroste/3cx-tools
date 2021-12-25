@@ -1,8 +1,9 @@
 {
-  "nginxSnippetsDir": "./dev-resources/nginx-snippets/",
+  "nginxSnippetsDir": "nginx-snippets/",
   "pbxConfigJsonFile": "./dev-resources/config.json",
   "provisioningDir": "./dev-resources/provisioning",
   "webclientDir": "./dev-resources/webclient",
 
+  "nginxProxySnippetInstallFile": "./dev-resources/14-3cx-tools-proxy.conf",
   "serviceInstallFile": "./dev-resources/3cx-tools-server.service"
 }

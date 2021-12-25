@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const systemd_1 = require("./systemd");
+const nginx_proxy_snippet_1 = require("./nginx-proxy-snippet");
 const commander_1 = require("commander");
 const connection_1 = require("./api/connection");
 const console_stamp_1 = require("console-stamp");
@@ -15,6 +16,7 @@ const phonebook_1 = require("./func/phonebook");
 const phonebook_fanvil_1 = require("./func/phonebook-fanvil");
 const phonebook_snom_1 = require("./func/phonebook-snom");
 const phonebook_yealink_1 = require("./func/phonebook-yealink");
+const web_server_1 = require("./web-server");
 const banner = String.raw `
    _____ _______  __    ______            __    
   |__  // ____/ |/ /   /_  __/___  ____  / /____
@@ -44,6 +46,7 @@ program
     .description('Stops and removes service (systemd)')
     .action(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     yield (0, systemd_1.uninstallService)();
+    yield (0, nginx_proxy_snippet_1.uninstallNginxProxySnippet)();
 }));
 program
     .command('run-as-service')
@@ -51,8 +54,10 @@ program
     .action(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     console.log('running as service');
     yield (0, database_1.initDb)();
+    yield (0, nginx_proxy_snippet_1.installNginxProxySnippet)();
+    yield (0, web_server_1.startWebServer)();
     yield (0, connection_1.connectTo3cxApi)();
-    yield (0, ws_api_1.initWsApi)();
+    (0, ws_api_1.initWsApi)();
     yield (0, phonebook_1.monitorPhonebook)();
     (0, phonebook_yealink_1.startPhonebookPatcherYealink)();
     (0, phonebook_fanvil_1.startPhonebookPatcherFanvil)();
