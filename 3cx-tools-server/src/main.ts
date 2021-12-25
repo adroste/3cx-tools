@@ -9,7 +9,10 @@ import { installWebclientCallOverviewPanel } from './webclient-call-overview-pan
 import { loadConfig } from './config';
 import { monitorActiveCalls } from './func/active-calls';
 import { monitorCallLogs } from './func/call-logs';
-import { runPhonebookPatcher } from './func/phonebook';
+import { monitorPhonebook } from './func/phonebook';
+import { startPhonebookPatcherFanvil } from './func/phonebook-fanvil';
+import { startPhonebookPatcherSnom } from './func/phonebook-snom';
+import { startPhonebookPatcherYealink } from './func/phonebook-yealink';
 
 const banner = String.raw`
    _____ _______  __    ______            __    
@@ -52,13 +55,21 @@ program
   .description('Starts the app as service')
   .action(async () => {
     console.log('running as service');
+    // core
     await initDb();
-    installWebclientCallOverviewPanel();
-    runPhonebookPatcher();
+
+    // api
     await connectTo3cxApi()
     await initWsApi();
+
+    // func modules
+    await monitorPhonebook();
+    startPhonebookPatcherYealink();
+    startPhonebookPatcherFanvil();
+    startPhonebookPatcherSnom();
     monitorActiveCalls();
     monitorCallLogs();
+    installWebclientCallOverviewPanel();
   });
 
 (async () => {

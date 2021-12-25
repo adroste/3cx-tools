@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePhonebookYealink = exports.buildPhonebookYealink = void 0;
+exports.stopPhonebookPatcherYealink = exports.startPhonebookPatcherYealink = exports.updatePhonebookYealink = exports.buildPhonebookYealink = void 0;
 const tslib_1 = require("tslib");
 const phonebook_1 = require("./phonebook");
 const path_1 = require("path");
@@ -39,4 +39,14 @@ function updatePhonebookYealink(phonebook, provisionDir) {
     });
 }
 exports.updatePhonebookYealink = updatePhonebookYealink;
+function startPhonebookPatcherYealink() {
+    (0, phonebook_1.onPhonebookChange)(updatePhonebookYealink);
+    console.log(TAG, 'patcher started');
+}
+exports.startPhonebookPatcherYealink = startPhonebookPatcherYealink;
+function stopPhonebookPatcherYealink() {
+    (0, phonebook_1.offPhonebookChange)(updatePhonebookYealink);
+    console.log(TAG, 'patcher stopped');
+}
+exports.stopPhonebookPatcherYealink = stopPhonebookPatcherYealink;
 //# sourceMappingURL=phonebook-yealink.js.map

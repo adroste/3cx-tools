@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePhonebookFanvil = exports.buildPhonebookFanvil = void 0;
+exports.stopPhonebookPatcherFanvil = exports.startPhonebookPatcherFanvil = exports.updatePhonebookFanvil = exports.buildPhonebookFanvil = void 0;
 const tslib_1 = require("tslib");
 const phonebook_1 = require("./phonebook");
 const path_1 = require("path");
@@ -49,4 +49,14 @@ function updatePhonebookFanvil(phonebook, provisionDir) {
     });
 }
 exports.updatePhonebookFanvil = updatePhonebookFanvil;
+function startPhonebookPatcherFanvil() {
+    (0, phonebook_1.onPhonebookChange)(updatePhonebookFanvil);
+    console.log(TAG, 'patcher started');
+}
+exports.startPhonebookPatcherFanvil = startPhonebookPatcherFanvil;
+function stopPhonebookPatcherFanvil() {
+    (0, phonebook_1.offPhonebookChange)(updatePhonebookFanvil);
+    console.log(TAG, 'patcher stopped');
+}
+exports.stopPhonebookPatcherFanvil = stopPhonebookPatcherFanvil;
 //# sourceMappingURL=phonebook-fanvil.js.map

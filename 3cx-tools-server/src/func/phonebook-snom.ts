@@ -1,4 +1,4 @@
-import { PHONE_NUMBER_PROPS, PhonebookEntry } from './phonebook';
+import { PHONE_NUMBER_PROPS, PhonebookEntry, offPhonebookChange, onPhonebookChange } from './phonebook';
 
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
@@ -90,4 +90,14 @@ export async function updatePhonebookSnom(phonebook: PhonebookEntry[], provision
   await writeFile(path, xml, 'utf-8');
 
   console.log(TAG, 'snom phonebook updated');
+}
+
+export function startPhonebookPatcherSnom() {
+  onPhonebookChange(updatePhonebookSnom);
+  console.log(TAG, 'patcher started');
+}
+
+export function stopPhonebookPatcherSnom() {
+  offPhonebookChange(updatePhonebookSnom);
+  console.log(TAG, 'patcher stopped');
 }

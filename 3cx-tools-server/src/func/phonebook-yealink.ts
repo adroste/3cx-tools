@@ -1,4 +1,4 @@
-import { PHONE_NUMBER_PROPS, PhonebookEntry } from './phonebook';
+import { PHONE_NUMBER_PROPS, PhonebookEntry, offPhonebookChange, onPhonebookChange } from './phonebook';
 
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
@@ -38,4 +38,14 @@ export async function updatePhonebookYealink(phonebook: PhonebookEntry[], provis
   await writeFile(path, xml, 'utf-8');
   
   console.log(TAG, 'yealink phonebook updated');
+}
+
+export function startPhonebookPatcherYealink() {
+  onPhonebookChange(updatePhonebookYealink);
+  console.log(TAG, 'patcher started');
+}
+
+export function stopPhonebookPatcherYealink() {
+  offPhonebookChange(updatePhonebookYealink);
+  console.log(TAG, 'patcher stopped');
 }

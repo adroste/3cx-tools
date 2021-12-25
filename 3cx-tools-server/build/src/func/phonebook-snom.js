@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePhonebookSnom = exports.buildPhonebookSnom = void 0;
+exports.stopPhonebookPatcherSnom = exports.startPhonebookPatcherSnom = exports.updatePhonebookSnom = exports.buildPhonebookSnom = void 0;
 const tslib_1 = require("tslib");
 const phonebook_1 = require("./phonebook");
 const path_1 = require("path");
@@ -81,4 +81,14 @@ function updatePhonebookSnom(phonebook, provisionDir) {
     });
 }
 exports.updatePhonebookSnom = updatePhonebookSnom;
+function startPhonebookPatcherSnom() {
+    (0, phonebook_1.onPhonebookChange)(updatePhonebookSnom);
+    console.log(TAG, 'patcher started');
+}
+exports.startPhonebookPatcherSnom = startPhonebookPatcherSnom;
+function stopPhonebookPatcherSnom() {
+    (0, phonebook_1.offPhonebookChange)(updatePhonebookSnom);
+    console.log(TAG, 'patcher stopped');
+}
+exports.stopPhonebookPatcherSnom = stopPhonebookPatcherSnom;
 //# sourceMappingURL=phonebook-snom.js.map

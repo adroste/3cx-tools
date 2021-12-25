@@ -12,6 +12,9 @@ const config_1 = require("./config");
 const active_calls_1 = require("./func/active-calls");
 const call_logs_1 = require("./func/call-logs");
 const phonebook_1 = require("./func/phonebook");
+const phonebook_fanvil_1 = require("./func/phonebook-fanvil");
+const phonebook_snom_1 = require("./func/phonebook-snom");
+const phonebook_yealink_1 = require("./func/phonebook-yealink");
 const banner = String.raw `
    _____ _______  __    ______            __    
   |__  // ____/ |/ /   /_  __/___  ____  / /____
@@ -48,12 +51,15 @@ program
     .action(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     console.log('running as service');
     yield (0, database_1.initDb)();
-    (0, webclient_call_overview_panel_1.installWebclientCallOverviewPanel)();
-    (0, phonebook_1.runPhonebookPatcher)();
     yield (0, connection_1.connectTo3cxApi)();
     yield (0, ws_api_1.initWsApi)();
+    yield (0, phonebook_1.monitorPhonebook)();
+    (0, phonebook_yealink_1.startPhonebookPatcherYealink)();
+    (0, phonebook_fanvil_1.startPhonebookPatcherFanvil)();
+    (0, phonebook_snom_1.startPhonebookPatcherSnom)();
     (0, active_calls_1.monitorActiveCalls)();
     (0, call_logs_1.monitorCallLogs)();
+    (0, webclient_call_overview_panel_1.installWebclientCallOverviewPanel)();
 }));
 (() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     yield (0, config_1.loadConfig)();

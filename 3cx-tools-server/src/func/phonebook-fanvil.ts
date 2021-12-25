@@ -1,4 +1,4 @@
-import { PHONE_NUMBER_PROPS, PhonebookEntry } from './phonebook';
+import { PHONE_NUMBER_PROPS, PhonebookEntry, offPhonebookChange, onPhonebookChange } from './phonebook';
 
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
@@ -50,4 +50,14 @@ export async function updatePhonebookFanvil(phonebook: PhonebookEntry[], provisi
   await writeFile(path, xml, 'utf-8');
   
   console.log(TAG, 'fanvil phonebook updated');
+}
+
+export function startPhonebookPatcherFanvil() {
+  onPhonebookChange(updatePhonebookFanvil);
+  console.log(TAG, 'patcher started');
+}
+
+export function stopPhonebookPatcherFanvil() {
+  offPhonebookChange(updatePhonebookFanvil);
+  console.log(TAG, 'patcher stopped');
 }

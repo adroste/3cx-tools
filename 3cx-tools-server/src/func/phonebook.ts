@@ -1,15 +1,17 @@
 import { FSWatcher, watch } from 'fs';
 
+import { EventEmitter } from 'events';
 import { debounce } from 'lodash';
 import { getConfig } from '../config';
 import { getDb } from '../database';
 import { join } from 'path';
 import { readdir } from 'fs/promises';
-import { updatePhonebookFanvil } from './phonebook-fanvil';
-import { updatePhonebookSnom } from './phonebook-snom';
-import { updatePhonebookYealink } from './phonebook-yealink';
 
-const TAG = '[Phonebook]';
+const TAG = '[Phonebook Monitor]';
+const phonebookMonitor = new EventEmitter();
+let fileWatcher: FSWatcher | null;
+let phonebook: PhonebookEntry[] = [];
+let provisionDir: string;
 
 interface PhonebookRow {
   idphonebook: number,
@@ -130,34 +132,44 @@ async function queryPhonebook() {
   return entries;
 }
 
-let fileWatcher: FSWatcher;
-async function registerFileWatcher() {
-  console.log(TAG, 'watching phonebook files...');
+function registerFileWatcher() {
   // The "Double Debounce":
   // outer debounce: group and wait for multiple file changes in directory
   const debouncedRun = debounce(
     // inner debounce: prevent infinite recursion when writing a watched file/folder
-    debounce(runPhonebookPatcher, 10000, { leading: true, trailing: false })
+    debounce(updatePhonebook, 10000, { leading: true, trailing: false })
   , 3000);
   // we update the phonebooks everytime we detect a change from 3cx
   // this works because as of v18.0.3 3cx also updates all the 
   // phonebook files when we change a hidden number of a contact 
   // (like the business or private ones)
-  fileWatcher = watch(await getProvisionDirPath(), (_, filename) => {
+  fileWatcher = watch(provisionDir, (_, filename) => {
     if (filename.includes('phonebook'))
       debouncedRun();
   });
 }
 
-export async function runPhonebookPatcher() {
-  const provisionDir = await getProvisionDirPath();
-  const phonebook = await queryPhonebook();
+export async function updatePhonebook() {
+  phonebook = await queryPhonebook();
+  phonebookMonitor.emit('phonebook', phonebook, provisionDir);
+}
 
-  await updatePhonebookYealink(phonebook, provisionDir);
-  await updatePhonebookFanvil(phonebook, provisionDir);
-  await updatePhonebookSnom(phonebook, provisionDir);
+export async function monitorPhonebook() {
+  provisionDir = await getProvisionDirPath();
+  registerFileWatcher();
+  console.log(TAG, 'watching phonebook files...');
+}
 
-  console.log(TAG, 'phonebooks updated');
-  if (!fileWatcher)
-    registerFileWatcher();
+export function stopMonitorPhonebook() {
+  fileWatcher?.close();
+  fileWatcher = null;
+  console.log(TAG, 'stopped');
+}
+
+export function onPhonebookChange(listener: (phonebook: PhonebookEntry[], provisionDir: string) => void) {
+  phonebookMonitor.on('phonebook', listener);
+}
+
+export function offPhonebookChange(listener: (phonebook: PhonebookEntry[], provisionDir: string) => void) {
+  phonebookMonitor.off('phonebook', listener);
 }

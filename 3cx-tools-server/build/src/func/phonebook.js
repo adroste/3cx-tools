@@ -1,17 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runPhonebookPatcher = exports.PHONE_NUMBER_PROPS = void 0;
+exports.offPhonebookChange = exports.onPhonebookChange = exports.stopMonitorPhonebook = exports.monitorPhonebook = exports.updatePhonebook = exports.PHONE_NUMBER_PROPS = void 0;
 const tslib_1 = require("tslib");
 const fs_1 = require("fs");
+const events_1 = require("events");
 const lodash_1 = require("lodash");
 const config_1 = require("../config");
 const database_1 = require("../database");
 const path_1 = require("path");
 const promises_1 = require("fs/promises");
-const phonebook_fanvil_1 = require("./phonebook-fanvil");
-const phonebook_snom_1 = require("./phonebook-snom");
-const phonebook_yealink_1 = require("./phonebook-yealink");
-const TAG = '[Phonebook]';
+const TAG = '[Phonebook Monitor]';
+const phonebookMonitor = new events_1.EventEmitter();
+let fileWatcher;
+let phonebook = [];
+let provisionDir;
 exports.PHONE_NUMBER_PROPS = [
     'mobile',
     'private',
@@ -77,28 +79,40 @@ function queryPhonebook() {
         return entries;
     });
 }
-let fileWatcher;
 function registerFileWatcher() {
+    const debouncedRun = (0, lodash_1.debounce)((0, lodash_1.debounce)(updatePhonebook, 10000, { leading: true, trailing: false }), 3000);
+    fileWatcher = (0, fs_1.watch)(provisionDir, (_, filename) => {
+        if (filename.includes('phonebook'))
+            debouncedRun();
+    });
+}
+function updatePhonebook() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        phonebook = yield queryPhonebook();
+        phonebookMonitor.emit('phonebook', phonebook, provisionDir);
+    });
+}
+exports.updatePhonebook = updatePhonebook;
+function monitorPhonebook() {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        provisionDir = yield getProvisionDirPath();
+        registerFileWatcher();
         console.log(TAG, 'watching phonebook files...');
-        const debouncedRun = (0, lodash_1.debounce)((0, lodash_1.debounce)(runPhonebookPatcher, 10000, { leading: true, trailing: false }), 3000);
-        fileWatcher = (0, fs_1.watch)(yield getProvisionDirPath(), (_, filename) => {
-            if (filename.includes('phonebook'))
-                debouncedRun();
-        });
     });
 }
-function runPhonebookPatcher() {
-    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        const provisionDir = yield getProvisionDirPath();
-        const phonebook = yield queryPhonebook();
-        yield (0, phonebook_yealink_1.updatePhonebookYealink)(phonebook, provisionDir);
-        yield (0, phonebook_fanvil_1.updatePhonebookFanvil)(phonebook, provisionDir);
-        yield (0, phonebook_snom_1.updatePhonebookSnom)(phonebook, provisionDir);
-        console.log(TAG, 'phonebooks updated');
-        if (!fileWatcher)
-            registerFileWatcher();
-    });
+exports.monitorPhonebook = monitorPhonebook;
+function stopMonitorPhonebook() {
+    fileWatcher === null || fileWatcher === void 0 ? void 0 : fileWatcher.close();
+    fileWatcher = null;
+    console.log(TAG, 'stopped');
 }
-exports.runPhonebookPatcher = runPhonebookPatcher;
+exports.stopMonitorPhonebook = stopMonitorPhonebook;
+function onPhonebookChange(listener) {
+    phonebookMonitor.on('phonebook', listener);
+}
+exports.onPhonebookChange = onPhonebookChange;
+function offPhonebookChange(listener) {
+    phonebookMonitor.off('phonebook', listener);
+}
+exports.offPhonebookChange = offPhonebookChange;
 //# sourceMappingURL=phonebook.js.map
