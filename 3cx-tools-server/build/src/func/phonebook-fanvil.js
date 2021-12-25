@@ -40,9 +40,10 @@ function buildPhonebookFanvil(phonebook) {
     return xmlTemplate(body.trim()).trim();
 }
 exports.buildPhonebookFanvil = buildPhonebookFanvil;
-function updatePhonebookFanvil(phonebook, provisionDir) {
+function updatePhonebookFanvil(phonebook) {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const xml = buildPhonebookFanvil(phonebook);
+        const provisionDir = (0, phonebook_1.getProvisionDirPath)();
         const path = (0, path_1.join)(provisionDir, 'fanvil_phonebook.xml');
         yield (0, promises_1.writeFile)(path, xml, 'utf-8');
         console.log(TAG, 'fanvil phonebook updated');
@@ -50,13 +51,18 @@ function updatePhonebookFanvil(phonebook, provisionDir) {
 }
 exports.updatePhonebookFanvil = updatePhonebookFanvil;
 function startPhonebookPatcherFanvil() {
-    (0, phonebook_1.onPhonebookChange)(updatePhonebookFanvil);
-    console.log(TAG, 'patcher started');
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        console.log(TAG, 'patcher started');
+        updatePhonebookFanvil((0, phonebook_1.getPhonebook)());
+        (0, phonebook_1.onPhonebookChange)(updatePhonebookFanvil);
+    });
 }
 exports.startPhonebookPatcherFanvil = startPhonebookPatcherFanvil;
 function stopPhonebookPatcherFanvil() {
-    (0, phonebook_1.offPhonebookChange)(updatePhonebookFanvil);
-    console.log(TAG, 'patcher stopped');
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        console.log(TAG, 'patcher stopped');
+        (0, phonebook_1.offPhonebookChange)(updatePhonebookFanvil);
+    });
 }
 exports.stopPhonebookPatcherFanvil = stopPhonebookPatcherFanvil;
 //# sourceMappingURL=phonebook-fanvil.js.map

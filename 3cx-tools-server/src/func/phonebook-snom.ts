@@ -1,4 +1,4 @@
-import { PHONE_NUMBER_PROPS, PhonebookEntry, offPhonebookChange, onPhonebookChange } from './phonebook';
+import { PHONE_NUMBER_PROPS, PhonebookEntry, getPhonebook, getProvisionDirPath, offPhonebookChange, onPhonebookChange } from './phonebook';
 
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
@@ -83,9 +83,10 @@ export function buildPhonebookSnom(phonebook: PhonebookEntry[]) {
   return xmlTemplate(body.trim()).trim();
 }
 
-export async function updatePhonebookSnom(phonebook: PhonebookEntry[], provisionDir: string) {
+export async function updatePhonebookSnom(phonebook: PhonebookEntry[]) {
   const xml = buildPhonebookSnom(phonebook);
 
+  const provisionDir = getProvisionDirPath();
   const path = join(provisionDir, 'snom_phonebook.xml');
   await writeFile(path, xml, 'utf-8');
 
@@ -93,11 +94,12 @@ export async function updatePhonebookSnom(phonebook: PhonebookEntry[], provision
 }
 
 export function startPhonebookPatcherSnom() {
-  onPhonebookChange(updatePhonebookSnom);
   console.log(TAG, 'patcher started');
+  updatePhonebookSnom(getPhonebook());
+  onPhonebookChange(updatePhonebookSnom);
 }
 
 export function stopPhonebookPatcherSnom() {
-  offPhonebookChange(updatePhonebookSnom);
   console.log(TAG, 'patcher stopped');
+  offPhonebookChange(updatePhonebookSnom);
 }

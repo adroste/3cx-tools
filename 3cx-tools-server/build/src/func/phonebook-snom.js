@@ -72,9 +72,10 @@ function buildPhonebookSnom(phonebook) {
     return xmlTemplate(body.trim()).trim();
 }
 exports.buildPhonebookSnom = buildPhonebookSnom;
-function updatePhonebookSnom(phonebook, provisionDir) {
+function updatePhonebookSnom(phonebook) {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const xml = buildPhonebookSnom(phonebook);
+        const provisionDir = (0, phonebook_1.getProvisionDirPath)();
         const path = (0, path_1.join)(provisionDir, 'snom_phonebook.xml');
         yield (0, promises_1.writeFile)(path, xml, 'utf-8');
         console.log(TAG, 'snom phonebook updated');
@@ -82,13 +83,14 @@ function updatePhonebookSnom(phonebook, provisionDir) {
 }
 exports.updatePhonebookSnom = updatePhonebookSnom;
 function startPhonebookPatcherSnom() {
-    (0, phonebook_1.onPhonebookChange)(updatePhonebookSnom);
     console.log(TAG, 'patcher started');
+    updatePhonebookSnom((0, phonebook_1.getPhonebook)());
+    (0, phonebook_1.onPhonebookChange)(updatePhonebookSnom);
 }
 exports.startPhonebookPatcherSnom = startPhonebookPatcherSnom;
 function stopPhonebookPatcherSnom() {
-    (0, phonebook_1.offPhonebookChange)(updatePhonebookSnom);
     console.log(TAG, 'patcher stopped');
+    (0, phonebook_1.offPhonebookChange)(updatePhonebookSnom);
 }
 exports.stopPhonebookPatcherSnom = stopPhonebookPatcherSnom;
 //# sourceMappingURL=phonebook-snom.js.map

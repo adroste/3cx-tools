@@ -1,4 +1,4 @@
-import { PHONE_NUMBER_PROPS, PhonebookEntry, offPhonebookChange, onPhonebookChange } from './phonebook';
+import { PHONE_NUMBER_PROPS, PhonebookEntry, getPhonebook, getProvisionDirPath, offPhonebookChange, onPhonebookChange } from './phonebook';
 
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
@@ -31,9 +31,10 @@ export function buildPhonebookYealink(phonebook: PhonebookEntry[]) {
   return xmlTemplate(body.trim()).trim();
 }
 
-export async function updatePhonebookYealink(phonebook: PhonebookEntry[], provisionDir: string) {
+export async function updatePhonebookYealink(phonebook: PhonebookEntry[]) {
   const xml = buildPhonebookYealink(phonebook);
 
+  const provisionDir = getProvisionDirPath();
   const path = join(provisionDir, 'yealink_phonebook.xml');
   await writeFile(path, xml, 'utf-8');
   
@@ -41,11 +42,12 @@ export async function updatePhonebookYealink(phonebook: PhonebookEntry[], provis
 }
 
 export function startPhonebookPatcherYealink() {
-  onPhonebookChange(updatePhonebookYealink);
   console.log(TAG, 'patcher started');
+  updatePhonebookYealink(getPhonebook());
+  onPhonebookChange(updatePhonebookYealink);
 }
 
 export function stopPhonebookPatcherYealink() {
-  offPhonebookChange(updatePhonebookYealink);
   console.log(TAG, 'patcher stopped');
+  offPhonebookChange(updatePhonebookYealink);
 }

@@ -1,4 +1,4 @@
-import { PHONE_NUMBER_PROPS, PhonebookEntry, offPhonebookChange, onPhonebookChange } from './phonebook';
+import { PHONE_NUMBER_PROPS, PhonebookEntry, getPhonebook, getProvisionDirPath, offPhonebookChange, onPhonebookChange } from './phonebook';
 
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
@@ -43,21 +43,23 @@ export function buildPhonebookFanvil(phonebook: PhonebookEntry[]) {
   return xmlTemplate(body.trim()).trim();
 }
 
-export async function updatePhonebookFanvil(phonebook: PhonebookEntry[], provisionDir: string) {
+export async function updatePhonebookFanvil(phonebook: PhonebookEntry[]) {
   const xml = buildPhonebookFanvil(phonebook);
 
+  const provisionDir = getProvisionDirPath();
   const path = join(provisionDir, 'fanvil_phonebook.xml');
   await writeFile(path, xml, 'utf-8');
   
   console.log(TAG, 'fanvil phonebook updated');
 }
 
-export function startPhonebookPatcherFanvil() {
-  onPhonebookChange(updatePhonebookFanvil);
+export async function startPhonebookPatcherFanvil() {
   console.log(TAG, 'patcher started');
+  updatePhonebookFanvil(getPhonebook());
+  onPhonebookChange(updatePhonebookFanvil);
 }
 
-export function stopPhonebookPatcherFanvil() {
-  offPhonebookChange(updatePhonebookFanvil);
+export async function stopPhonebookPatcherFanvil() {
   console.log(TAG, 'patcher stopped');
+  offPhonebookChange(updatePhonebookFanvil);
 }

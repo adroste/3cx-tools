@@ -98,7 +98,7 @@ function getDisplayName(firstName: string | undefined, lastName: string | undefi
   return parts.filter(x=>x).join(sep);
 }
 
-async function getProvisionDirPath() {
+async function detectProvisionDirPath() {
   const files = await readdir(getConfig().provisioningDir, { withFileTypes: true });
   const dirs = files.filter(f => f.isDirectory());
   if (dirs.length !== 1)
@@ -155,11 +155,22 @@ function registerFileWatcher() {
 
 export async function updatePhonebook() {
   phonebook = await queryPhonebook();
-  phonebookMonitor.emit('phonebook', phonebook, provisionDir);
+  phonebookMonitor.emit('phonebook', phonebook);
+}
+
+export function getProvisionDirPath() {
+  if (!provisionDir)
+    throw new Error('provision dir is unknown (module was not initialized correctly)')
+  return provisionDir;
+}
+
+export function getPhonebook() {
+  return phonebook;
 }
 
 export async function monitorPhonebook() {
-  provisionDir = await getProvisionDirPath();
+  provisionDir = await detectProvisionDirPath();
+  await updatePhonebook();
   registerFileWatcher();
   console.log(TAG, 'watching phonebook files...');
 }
@@ -170,10 +181,10 @@ export function stopMonitorPhonebook() {
   console.log(TAG, 'stopped');
 }
 
-export function onPhonebookChange(listener: (phonebook: PhonebookEntry[], provisionDir: string) => void) {
+export function onPhonebookChange(listener: (phonebook: PhonebookEntry[]) => void) {
   phonebookMonitor.on('phonebook', listener);
 }
 
-export function offPhonebookChange(listener: (phonebook: PhonebookEntry[], provisionDir: string) => void) {
+export function offPhonebookChange(listener: (phonebook: PhonebookEntry[]) => void) {
   phonebookMonitor.off('phonebook', listener);
 }

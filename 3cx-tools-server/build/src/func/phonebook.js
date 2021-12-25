@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.offPhonebookChange = exports.onPhonebookChange = exports.stopMonitorPhonebook = exports.monitorPhonebook = exports.updatePhonebook = exports.PHONE_NUMBER_PROPS = void 0;
+exports.offPhonebookChange = exports.onPhonebookChange = exports.stopMonitorPhonebook = exports.monitorPhonebook = exports.getPhonebook = exports.getProvisionDirPath = exports.updatePhonebook = exports.PHONE_NUMBER_PROPS = void 0;
 const tslib_1 = require("tslib");
 const fs_1 = require("fs");
 const events_1 = require("events");
@@ -45,7 +45,7 @@ function getDisplayName(firstName, lastName, format) {
     }
     return parts.filter(x => x).join(sep);
 }
-function getProvisionDirPath() {
+function detectProvisionDirPath() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const files = yield (0, promises_1.readdir)((0, config_1.getConfig)().provisioningDir, { withFileTypes: true });
         const dirs = files.filter(f => f.isDirectory());
@@ -76,6 +76,7 @@ function queryPhonebook() {
             fax: r.pv_an7,
             fax2: r.pv_an8,
         }));
+        entries.sort((a, b) => { var _a; return ((_a = a.displayName) === null || _a === void 0 ? void 0 : _a.localeCompare(b.displayName || '')) || 0; });
         return entries;
     });
 }
@@ -89,13 +90,24 @@ function registerFileWatcher() {
 function updatePhonebook() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         phonebook = yield queryPhonebook();
-        phonebookMonitor.emit('phonebook', phonebook, provisionDir);
+        phonebookMonitor.emit('phonebook', phonebook);
     });
 }
 exports.updatePhonebook = updatePhonebook;
+function getProvisionDirPath() {
+    if (!provisionDir)
+        throw new Error('provision dir is unknown (module was not initialized correctly)');
+    return provisionDir;
+}
+exports.getProvisionDirPath = getProvisionDirPath;
+function getPhonebook() {
+    return phonebook;
+}
+exports.getPhonebook = getPhonebook;
 function monitorPhonebook() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        provisionDir = yield getProvisionDirPath();
+        provisionDir = yield detectProvisionDirPath();
+        yield updatePhonebook();
         registerFileWatcher();
         console.log(TAG, 'watching phonebook files...');
     });
