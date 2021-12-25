@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.offActiveCallsChange = exports.onActiveCallsChange = exports.stopMonitorActiveCalls = exports.monitorActiveCalls = exports.getActiveCalls = exports.checkActiveCalls = void 0;
 const tslib_1 = require("tslib");
 const events_1 = require("events");
-const connection_1 = require("./connection");
+const connection_1 = require("../api/connection");
 const config_1 = require("../config");
 const lodash_1 = require("lodash");
 const TAG = '[Active Calls Monitor]';

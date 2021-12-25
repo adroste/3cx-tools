@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { IActiveCalls } from '@adroste/3cx-api';
-import { api } from './connection';
+import { api } from '../api/connection';
 import { getConfig } from '../config';
 import { isEqual } from 'lodash';
 

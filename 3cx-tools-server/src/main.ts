@@ -7,9 +7,9 @@ import { initDb } from './database';
 import { initWsApi } from './api/ws-api';
 import { installWebclientCallOverviewPanel } from './webclient-call-overview-panel';
 import { loadConfig } from './config';
-import { monitorActiveCalls } from './api/active-calls';
-import { monitorCallLogs } from './api/call-logs';
-import { runPhonebookPatcher } from './phonebook';
+import { monitorActiveCalls } from './func/active-calls';
+import { monitorCallLogs } from './func/call-logs';
+import { runPhonebookPatcher } from './func/phonebook';
 
 const banner = String.raw`
    _____ _______  __    ______            __    

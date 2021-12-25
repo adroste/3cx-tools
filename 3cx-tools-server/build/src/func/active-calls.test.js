@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const active_calls_1 = require("./active-calls");
 const database_1 = require("../database");
-const connection_1 = require("./connection");
+const connection_1 = require("../api/connection");
 const config_1 = require("../config");
 beforeAll(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     yield (0, config_1.loadConfig)();

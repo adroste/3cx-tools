@@ -9,9 +9,9 @@ const database_1 = require("./database");
 const ws_api_1 = require("./api/ws-api");
 const webclient_call_overview_panel_1 = require("./webclient-call-overview-panel");
 const config_1 = require("./config");
-const active_calls_1 = require("./api/active-calls");
-const call_logs_1 = require("./api/call-logs");
-const phonebook_1 = require("./phonebook");
+const active_calls_1 = require("./func/active-calls");
+const call_logs_1 = require("./func/call-logs");
+const phonebook_1 = require("./func/phonebook");
 const banner = String.raw `
    _____ _______  __    ______            __    
   |__  // ____/ |/ /   /_  __/___  ____  / /____

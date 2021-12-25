@@ -1,7 +1,7 @@
 import { checkActiveCalls, offActiveCallsChange, onActiveCallsChange } from './active-calls';
 import { closeDb, initDb } from '../database';
 
-import { connectTo3cxApi } from './connection';
+import { connectTo3cxApi } from '../api/connection';
 import { loadConfig } from '../config';
 
 beforeAll(async () => {

@@ -1,7 +1,7 @@
 import * as http from 'http';
 
-import { CallLog, getCallLogs, offCallLogs, onCallLogs } from './call-logs';
-import { getActiveCalls, offActiveCallsChange, onActiveCallsChange } from './active-calls';
+import { CallLog, getCallLogs, offCallLogs, onCallLogs } from '../func/call-logs';
+import { getActiveCalls, offActiveCallsChange, onActiveCallsChange } from '../func/active-calls';
 
 import { IActiveCalls } from '@adroste/3cx-api';
 import { Server } from 'socket.io';

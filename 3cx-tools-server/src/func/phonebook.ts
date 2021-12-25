@@ -1,8 +1,8 @@
 import { FSWatcher, watch } from 'fs';
 
 import { debounce } from 'lodash';
-import { getConfig } from './config';
-import { getDb } from './database';
+import { getConfig } from '../config';
+import { getDb } from '../database';
 import { join } from 'path';
 import { readdir } from 'fs/promises';
 import { updatePhonebookFanvil } from './phonebook-fanvil';
