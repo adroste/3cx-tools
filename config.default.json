@@ -5,7 +5,7 @@
   "webclientDir": "/var/lib/3cxpbx/Data/Http/wwwroot/webclient",
 
   "serviceInstallFile": "/lib/systemd/system/3cx-tools-server.service",
-  "webclientCallOverviewPanelBuildDir": "../webclient-realtime-call-overview-panel/build/",
+  "webclientCallOverviewPanelBuildDir": "./webclient-realtime-call-overview-panel/build/",
 
   "activeCallsCheckIntervalMs": 500,
   "wsApiPort": 4848
