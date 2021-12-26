@@ -23,7 +23,11 @@ export let io: Server;
 
 export function initWsApi() {
   io = new Server(httpServer, {
-    path: '/3cx-tools/socket.io'
+    path: '/3cx-tools/socket.io',
+    cors: {
+      origin: true,
+      credentials: true,
+    }
   });
   console.log(TAG, `WS api listening...`);
   setListener();

@@ -18,7 +18,11 @@ exports.SEND_MSG = {
 };
 function initWsApi() {
     exports.io = new socket_io_1.Server(web_server_1.httpServer, {
-        path: '/3cx-tools/socket.io'
+        path: '/3cx-tools/socket.io',
+        cors: {
+            origin: true,
+            credentials: true,
+        }
     });
     console.log(TAG, `WS api listening...`);
     setListener();
