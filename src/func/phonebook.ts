@@ -5,7 +5,7 @@ import { debounce } from 'lodash';
 import { getConfig } from '../config';
 import { getDb } from '../database';
 import { join } from 'path';
-import { queryParameter } from './parameter';
+import { queryParameter } from '../utils/parameter';
 import { readdir } from 'fs/promises';
 
 const TAG = '[Phonebook Monitor]';

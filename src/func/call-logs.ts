@@ -135,9 +135,10 @@ function clPartyInfoToCallerInfo(dn?: string, dnType?: number, callerNumber?: st
 async function queryCallLogs(minCallId: number): Promise<CallLog[]> {
   const callsRes = await getDb().query(`
 SELECT * FROM public.cl_calls 
-WHERE id >= ${minCallId}
+WHERE id >= $1
 ORDER BY id DESC 
-LIMIT ${CALL_LOG_LIMIT}`); // Reminder: ordered descending
+LIMIT $2
+`, [minCallId, CALL_LOG_LIMIT]); // Reminder: ordered descending
   const calls = callsRes.rows as ClCallsRows[];
   if (calls.length === 0)
     return [];
@@ -151,9 +152,10 @@ LEFT JOIN public.cl_party_info src
 	ON src_part_id = src.id
 LEFT JOIN public.cl_party_info dst
 	on dst_part_id = dst.id
-WHERE call_id >= ${minCallId} AND call_id <= ${maxCallId}
+WHERE call_id >= $1 AND call_id <= $2
   AND action_id != 1
-ORDER BY call_id ASC, seq_order ASC`);
+ORDER BY call_id ASC, seq_order ASC
+`, [minCallId, maxCallId]);
   // ASSUMPTION: action_id != 1 filters unwanted rows, maybe 1 means redirect? or connect? 
   //              => i don't know but it kind of works
   // Reminder: ordered ascending

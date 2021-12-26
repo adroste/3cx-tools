@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.stopCallerId = exports.startCallerId = exports.updateCallerId = exports.resolveCaller = exports.createLookupTable = void 0;
 const tslib_1 = require("tslib");
 const phonebook_1 = require("./phonebook");
-const parameter_1 = require("./parameter");
+const parameter_1 = require("../utils/parameter");
 const TAG = '[Caller ID]';
 const DEFAULT_RESOLVE_LENGTH = 6;
 let lookupTable = {};

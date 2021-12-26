@@ -1,6 +1,6 @@
 import { PHONE_NUMBER_PROPS, PhonebookEntry, getPhonebook, offPhonebookChange, onPhonebookChange } from './phonebook';
 
-import { queryParameter } from './parameter';
+import { queryParameter } from '../utils/parameter';
 
 const TAG = '[Caller ID]';
 const DEFAULT_RESOLVE_LENGTH = 6;

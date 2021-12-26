@@ -80,9 +80,10 @@ function queryCallLogs(minCallId) {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const callsRes = yield (0, database_1.getDb)().query(`
 SELECT * FROM public.cl_calls 
-WHERE id >= ${minCallId}
+WHERE id >= $1
 ORDER BY id DESC 
-LIMIT ${CALL_LOG_LIMIT}`);
+LIMIT $2
+`, [minCallId, CALL_LOG_LIMIT]);
         const calls = callsRes.rows;
         if (calls.length === 0)
             return [];
@@ -96,9 +97,10 @@ LEFT JOIN public.cl_party_info src
 	ON src_part_id = src.id
 LEFT JOIN public.cl_party_info dst
 	on dst_part_id = dst.id
-WHERE call_id >= ${minCallId} AND call_id <= ${maxCallId}
+WHERE call_id >= $1 AND call_id <= $2
   AND action_id != 1
-ORDER BY call_id ASC, seq_order ASC`);
+ORDER BY call_id ASC, seq_order ASC
+`, [minCallId, maxCallId]);
         const segments = segmentsRes.rows;
         const segmentsById = segments.reduce((segmentsById, s) => {
             if (!segmentsById[s.call_id])
