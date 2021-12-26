@@ -5,6 +5,7 @@ import { debounce } from 'lodash';
 import { getConfig } from '../config';
 import { getDb } from '../database';
 import { join } from 'path';
+import { queryParameter } from './parameter';
 import { readdir } from 'fs/promises';
 
 const TAG = '[Phonebook Monitor]';
@@ -33,14 +34,6 @@ interface PhonebookRow {
   pv_an8?: string, // fax 2
   pv_an9?: string, // unknown unused???
   pv_contact_image?: string
-}
-
-interface ParameterRow {
-  name: string,
-  idparameter: number,
-  description?: string,
-  parametertype: number,
-  value?: string,
 }
 
 export interface PhonebookEntry {
@@ -79,9 +72,8 @@ export const PHONE_NUMBER_PROPS = [
 export type DisplayNameFormat = 'FirstNameLastName' | 'LastNameFirstName';
 
 async function queryDisplayNameFormat(): Promise<DisplayNameFormat> {
-  const res = await getDb().query(`SELECT value FROM public.parameter WHERE name='PHONEBOOK_LAST_FIRST'`);
-  const rows = res.rows as ParameterRow[];
-  return rows[0]?.value === '0'
+  const val = await queryParameter('PHONEBOOK_LAST_FIRST');
+  return val === '0'
     ? 'FirstNameLastName'
     : 'LastNameFirstName';
 }

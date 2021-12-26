@@ -2,6 +2,7 @@ import { offActiveCallsChange, onActiveCallsChange } from './active-calls';
 
 import { EventEmitter } from 'events';
 import { getDb } from '../database';
+import { resolveCaller } from './caller-id';
 
 const TAG = '[Call Log Monitor]';
 const CALL_LOG_LIMIT = 1000;
@@ -108,11 +109,13 @@ function getCallerTypeFromDnType(dnType?: number): CallerType {
 function clPartyInfoToCallerInfo(dn?: string, dnType?: number, callerNumber?: string, displayName?: string): CallerInfo {
   const type = getCallerTypeFromDnType(dnType);
   if (type === 'External') {
-    // TODO lookup name
+    // get callerId as 3CX does not add callerId to outgoing calls
+    // this also enables callerId for calls in the past
+    const entry = resolveCaller(callerNumber); 
     return {
-      displayName,
+      displayName: entry?.displayName || displayName,
       phoneNumber: callerNumber,
-      phoneBookId: 0, // TODO
+      phoneBookId: entry?.id || undefined,
       type
     }
   } else {

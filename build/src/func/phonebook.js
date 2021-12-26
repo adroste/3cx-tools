@@ -8,6 +8,7 @@ const lodash_1 = require("lodash");
 const config_1 = require("../config");
 const database_1 = require("../database");
 const path_1 = require("path");
+const parameter_1 = require("./parameter");
 const promises_1 = require("fs/promises");
 const TAG = '[Phonebook Monitor]';
 const phonebookMonitor = new events_1.EventEmitter();
@@ -24,11 +25,9 @@ exports.PHONE_NUMBER_PROPS = [
     'extra',
 ];
 function queryDisplayNameFormat() {
-    var _a;
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        const res = yield (0, database_1.getDb)().query(`SELECT value FROM public.parameter WHERE name='PHONEBOOK_LAST_FIRST'`);
-        const rows = res.rows;
-        return ((_a = rows[0]) === null || _a === void 0 ? void 0 : _a.value) === '0'
+        const val = yield (0, parameter_1.queryParameter)('PHONEBOOK_LAST_FIRST');
+        return val === '0'
             ? 'FirstNameLastName'
             : 'LastNameFirstName';
     });

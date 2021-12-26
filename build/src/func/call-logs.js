@@ -5,6 +5,7 @@ const tslib_1 = require("tslib");
 const active_calls_1 = require("./active-calls");
 const events_1 = require("events");
 const database_1 = require("../database");
+const caller_id_1 = require("./caller-id");
 const TAG = '[Call Log Monitor]';
 const CALL_LOG_LIMIT = 1000;
 const callLogsMonitor = new events_1.EventEmitter();
@@ -59,10 +60,11 @@ function getCallerTypeFromDnType(dnType) {
 function clPartyInfoToCallerInfo(dn, dnType, callerNumber, displayName) {
     const type = getCallerTypeFromDnType(dnType);
     if (type === 'External') {
+        const entry = (0, caller_id_1.resolveCaller)(callerNumber);
         return {
-            displayName,
+            displayName: (entry === null || entry === void 0 ? void 0 : entry.displayName) || displayName,
             phoneNumber: callerNumber,
-            phoneBookId: 0,
+            phoneBookId: (entry === null || entry === void 0 ? void 0 : entry.id) || undefined,
             type
         };
     }
