@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initWsApi = exports.io = exports.SEND_MSG = exports.RECV_MSG = void 0;
+const tslib_1 = require("tslib");
 const call_logs_1 = require("../func/call-logs");
+const auth_1 = require("./auth");
 const active_calls_1 = require("../func/active-calls");
 const socket_io_1 = require("socket.io");
 const web_server_1 = require("../web-server");
@@ -25,6 +27,17 @@ function initWsApi() {
         }
     });
     console.log(TAG, `WS api listening...`);
+    exports.io.use((socket, next) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        const username = socket.handshake.auth.username || '';
+        const password = socket.handshake.auth.password || '';
+        if ((yield (0, auth_1.checkDnReporterAccess)(username))
+            && (yield (0, auth_1.checkDnPassword)(username, password))) {
+            next();
+        }
+        else {
+            next(new Error('authentication failed'));
+        }
+    }));
     setListener();
 }
 exports.initWsApi = initWsApi;

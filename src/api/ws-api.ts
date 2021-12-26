@@ -1,4 +1,5 @@
 import { CallLog, getCallLogs, offCallLogs, onCallLogs } from '../func/call-logs';
+import { checkDnPassword, checkDnReporterAccess } from './auth';
 import { getActiveCalls, offActiveCallsChange, onActiveCallsChange } from '../func/active-calls';
 
 import { IActiveCalls } from '@adroste/3cx-api';
@@ -30,6 +31,21 @@ export function initWsApi() {
     }
   });
   console.log(TAG, `WS api listening...`);
+
+  // authenticator middleware
+  io.use(async (socket, next) => {
+    const username = socket.handshake.auth.username || '';
+    const password = socket.handshake.auth.password || '';
+    if (
+      await checkDnReporterAccess(username)
+      && await checkDnPassword(username, password)
+    ) {
+      next(); // auth successful
+    } else {
+      next(new Error('authentication failed'));
+    }
+  });
+
   setListener();
 }
 
@@ -46,7 +62,7 @@ function setListener() {
 
     socket.on(RECV_MSG.subscribeActiveCalls, () => {
       if (subscribedActiveCalls)
-        return; 
+        return;
       subscribedActiveCalls = true;
       onActiveCallsChange(sendActiveCalls);
       sendActiveCalls(getActiveCalls());
@@ -68,7 +84,7 @@ function setListener() {
 
     socket.on(RECV_MSG.subscribeCallLogs, () => {
       if (subscribedCallLogs)
-        return; 
+        return;
       subscribedCallLogs = true;
       onCallLogs(sendCallLogs);
       sendCallLogs(getCallLogs());
@@ -78,6 +94,6 @@ function setListener() {
       offCallLogs(sendCallLogs);
       subscribedCallLogs = false;
     });
-    
+
   });
 }
