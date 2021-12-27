@@ -56,9 +56,7 @@ program
     console.log('running as service');
     yield (0, database_1.initDb)();
     yield (0, nginx_proxy_snippet_1.installNginxProxySnippet)();
-    yield (0, web_server_1.startWebServer)();
     yield (0, connection_1.connectTo3cxApi)();
-    (0, ws_api_1.initWsApi)();
     yield (0, phonebook_1.monitorPhonebook)();
     yield (0, caller_id_1.startCallerId)();
     (0, phonebook_yealink_1.startPhonebookPatcherYealink)();
@@ -67,6 +65,8 @@ program
     (0, active_calls_1.monitorActiveCalls)();
     (0, call_logs_1.monitorCallLogs)();
     (0, webclient_call_overview_panel_1.installWebclientCallOverviewPanel)();
+    yield (0, web_server_1.startWebServer)();
+    (0, ws_api_1.initWsApi)();
 }));
 (() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     yield (0, config_1.loadConfig)();

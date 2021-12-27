@@ -62,11 +62,8 @@ program
     // core
     await initDb();
     await installNginxProxySnippet();
-    await startWebServer();
-
-    // api
     await connectTo3cxApi()
-    initWsApi();
+
 
     // func modules
     await monitorPhonebook();
@@ -77,6 +74,10 @@ program
     monitorActiveCalls();
     monitorCallLogs();
     installWebclientCallOverviewPanel();
+
+    // api
+    await startWebServer();
+    initWsApi();
   });
 
 (async () => {
