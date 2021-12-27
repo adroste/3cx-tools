@@ -95,6 +95,14 @@ function setListener() {
       offCallLogs(sendCallLogs);
       subscribedCallLogs = false;
     });
+    
+
+    // cleanup
+
+    socket.on('disconnect', () => {
+      offActiveCallsChange(sendActiveCalls);
+      offCallLogs(sendCallLogs);
+    });
 
   });
 }

@@ -74,6 +74,10 @@ function setListener() {
             (0, call_logs_1.offCallLogs)(sendCallLogs);
             subscribedCallLogs = false;
         });
+        socket.on('disconnect', () => {
+            (0, active_calls_1.offActiveCallsChange)(sendActiveCalls);
+            (0, call_logs_1.offCallLogs)(sendCallLogs);
+        });
     });
 }
 //# sourceMappingURL=ws-api.js.map
