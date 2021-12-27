@@ -75,6 +75,23 @@ interface ClSegmentsJoinedClPartyInfoRow {
   dst_display_name?: string,
 }
 
+let activeCallsHookTimers: NodeJS.Timer[] = [];
+/**
+ * It is not possible to instantly query the call logs after activeCalls changed.
+ * Therefore this utility tries to compensate cached/delayed db writes from 3cX. 
+ * The call logs update will performed three times: 
+ * 1st time after 1 second, 2nd time after 10 seconds, 3rd time after 60 seconds.
+ * This function debounces itself.
+ */
+function activeCallsChangeUpdateHook() {
+  activeCallsHookTimers.forEach(timer => clearTimeout(timer));
+  activeCallsHookTimers = [
+    setTimeout(updateCallLogs, 1000),
+    setTimeout(updateCallLogs, 10000),
+    setTimeout(updateCallLogs, 60000),
+  ];
+}
+
 export async function updateCallLogs() {
   // callLogs ordered descending, therefore first element = newest element
   const nextId = callLogs[0]?.id + 1 || 0;
@@ -90,12 +107,12 @@ export async function updateCallLogs() {
 
 export function monitorCallLogs() {
   updateCallLogs();
-  onActiveCallsChange(updateCallLogs);
+  onActiveCallsChange(activeCallsChangeUpdateHook);
   console.log(TAG, 'started');
 }
 
 export function stopMonitorCallLogs() {
-  offActiveCallsChange(updateCallLogs);
+  offActiveCallsChange(activeCallsChangeUpdateHook);
   console.log(TAG, 'stopped');
 }
 

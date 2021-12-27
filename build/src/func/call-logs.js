@@ -10,6 +10,15 @@ const TAG = '[Call Log Monitor]';
 const CALL_LOG_LIMIT = 1000;
 const callLogsMonitor = new events_1.EventEmitter();
 let callLogs = [];
+let activeCallsHookTimers = [];
+function activeCallsChangeUpdateHook() {
+    activeCallsHookTimers.forEach(timer => clearTimeout(timer));
+    activeCallsHookTimers = [
+        setTimeout(updateCallLogs, 1000),
+        setTimeout(updateCallLogs, 10000),
+        setTimeout(updateCallLogs, 60000),
+    ];
+}
 function updateCallLogs() {
     var _a;
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
@@ -27,12 +36,12 @@ function updateCallLogs() {
 exports.updateCallLogs = updateCallLogs;
 function monitorCallLogs() {
     updateCallLogs();
-    (0, active_calls_1.onActiveCallsChange)(updateCallLogs);
+    (0, active_calls_1.onActiveCallsChange)(activeCallsChangeUpdateHook);
     console.log(TAG, 'started');
 }
 exports.monitorCallLogs = monitorCallLogs;
 function stopMonitorCallLogs() {
-    (0, active_calls_1.offActiveCallsChange)(updateCallLogs);
+    (0, active_calls_1.offActiveCallsChange)(activeCallsChangeUpdateHook);
     console.log(TAG, 'stopped');
 }
 exports.stopMonitorCallLogs = stopMonitorCallLogs;
