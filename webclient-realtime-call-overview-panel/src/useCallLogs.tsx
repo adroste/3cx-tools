@@ -10,8 +10,11 @@ export function useCallLogs(): CallLog[] {
   useEffect(() => {
     if (!wsApi)
       return;
-    wsApi.subscribeCallLogs(setCallLogs);
-    return () => wsApi.unsubscribeCallLogs(setCallLogs);
+    const handler = (_: unknown) => {
+      setTimeout(() => setCallLogs(wsApi.cache.callLogs), 0);
+    }
+    wsApi.subscribeCallLogs(handler);
+    return () => wsApi.unsubscribeCallLogs(handler);
   }, [wsApi]);
 
   return callLogs;

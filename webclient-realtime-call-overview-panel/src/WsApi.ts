@@ -5,6 +5,8 @@ const BACKEND_URL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:4848/' 
   : window.location.origin;
 
+export const CALL_LOG_LIMIT = 1000;
+
 export const RECV_MSG = {
   connect: 'connect',
   connectError: 'connect_error',
@@ -47,7 +49,7 @@ export class WsApi {
     this.socket.close();
   }
 
-  cacheActiveCalls(activeCalls: IActiveCalls[]) {
+  cacheActiveCalls = (activeCalls: IActiveCalls[]) => {
     this.cache.activeCalls = activeCalls;
   }
 
@@ -71,8 +73,11 @@ export class WsApi {
     }
   }
 
-  cacheCallLogs(callLogs: CallLog[]) {
-    this.cache.callLogs = callLogs;
+  cacheCallLogs = (callLogs: CallLog[]) => {
+    this.cache.callLogs = [
+      ...callLogs,
+      ...this.cache.callLogs.slice(0, CALL_LOG_LIMIT - callLogs.length)
+    ];
   }
 
   subscribeCallLogs(listener: (callLogs: CallLog[]) => void) {
