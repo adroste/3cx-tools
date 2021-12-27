@@ -10,13 +10,13 @@ const callLogsMonitor = new EventEmitter();
 let callLogs: CallLog[] = [];
 
 export type IncomingOutgoing = 'incoming' | 'outgoing';
-export type CallerType = 'IVR' | 'Voicemail' | 'Internal' | 'External' | 'Other'
+export type CallerType = 'IVR' | 'Voicemail' | 'Internal' | 'External'
 
 export interface CallerInfo {
   displayName?: string,
   phoneBookId?: number, // foreign key of public.phonebook.idphonebook
   phoneNumber?: string,
-  type: CallerType,
+  type?: CallerType,
 }
 
 export interface CallSegment {
@@ -128,13 +128,13 @@ export function offCallLogs(listener: (callLogs: CallLog[]) => void) {
   callLogsMonitor.off('callLogs', listener);
 }
 
-function getCallerTypeFromDnType(dnType?: number): CallerType {
+function getCallerTypeFromDnType(dnType?: number): CallerType | undefined {
   switch (dnType) {
     case 0: return 'Internal';
     case 1: return 'External';
     case 5: return 'Voicemail';
     case 6: return 'IVR';
-    default: return 'Other';
+    default: return undefined;
   }
 }
 

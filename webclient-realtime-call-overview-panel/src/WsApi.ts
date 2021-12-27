@@ -1,4 +1,4 @@
-import { CallLog, IActiveCalls } from './wsApiTypes';
+import { ActiveCall, CallLog } from './wsApiTypes';
 import { Socket, io } from 'socket.io-client';
 
 const BACKEND_URL = process.env.NODE_ENV === 'development' 
@@ -28,7 +28,7 @@ export class WsApi {
   subscribedActiveCalls = false;
   subscribedCallLogs = false;
   cache: { 
-    activeCalls: IActiveCalls[], 
+    activeCalls: ActiveCall[], 
     callLogs: CallLog[] 
   } = {
     activeCalls: [], 
@@ -49,11 +49,11 @@ export class WsApi {
     this.socket.close();
   }
 
-  cacheActiveCalls = (activeCalls: IActiveCalls[]) => {
+  cacheActiveCalls = (activeCalls: ActiveCall[]) => {
     this.cache.activeCalls = activeCalls;
   }
 
-  subscribeActiveCalls(listener: (activeCalls: IActiveCalls[]) => void) {
+  subscribeActiveCalls(listener: (activeCalls: ActiveCall[]) => void) {
     this.socket.on(RECV_MSG.activeCalls, listener);
     if (this.subscribedActiveCalls) {
       listener(this.cache.activeCalls);
@@ -64,7 +64,7 @@ export class WsApi {
     }
   }
 
-  unsubscribeActiveCalls(listener: (activeCalls: IActiveCalls[]) => void) {
+  unsubscribeActiveCalls(listener: (activeCalls: ActiveCall[]) => void) {
     this.socket.off(RECV_MSG.activeCalls, listener);
     if (!this.socket.listeners(RECV_MSG.activeCalls).some(l => l !== this.cacheActiveCalls)) {
       this.socket.emit(SEND_MSG.unsubscribeActiveCalls);

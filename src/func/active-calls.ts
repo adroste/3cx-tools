@@ -1,20 +1,72 @@
+import { CallerInfo } from './call-logs';
 import { EventEmitter } from 'events';
 import { IActiveCalls } from '@adroste/3cx-api';
 import { api } from '../api/connection';
 import { getConfig } from '../config';
 import { isEqual } from 'lodash';
+import { resolveCaller } from './caller-id';
 
 const TAG = '[Active Calls Monitor]';
 
 const activeCallsMonitor = new EventEmitter();
-let checkInterval: NodeJS.Timer, activeCalls: IActiveCalls[];
+let checkInterval: NodeJS.Timer, activeCalls: ActiveCall[];
+
+export interface ActiveCall {
+  id: number,
+  establishedAt: string,
+  from: CallerInfo,
+  lastChangeStatus: string,
+  status: string,
+  to: CallerInfo,
+}
+
+function getPhoneNumberFromCallerId(callerId: string) {
+  // format can be for instance: "Name name (+123456789)", "(123495)", "+4359090132"
+  const test = /(^|\()([+]?\d{2,})($|\)$)/;
+  const match = test.exec(callerId);
+  if (match)
+    return match[2];
+  return undefined;
+}
+
+function stripPhoneNumberFromCallerId(callerId: string, phoneNumber: string) {
+  return callerId
+    .replace(phoneNumber, '')
+    .replace(' ()', '');
+}
+
+function createCallerInfoFromCallerId(callerId: string): CallerInfo {
+  const phoneNumber = getPhoneNumberFromCallerId(callerId);
+  if (!phoneNumber)
+    return { displayName: callerId };
+
+  const entry = resolveCaller(phoneNumber);
+  const callerIdWithoutNr = stripPhoneNumberFromCallerId(callerId, phoneNumber);
+  return {
+    displayName: entry?.displayName || callerIdWithoutNr,
+    phoneNumber,
+    phoneBookId: entry?.id || undefined,
+  };
+}
+
+export function parseActiveCalls(activeCalls: IActiveCalls[]): ActiveCall[] {
+  return activeCalls.map((c) => ({
+    id: c.Id,
+    establishedAt: c.EstablishedAt,
+    from: createCallerInfoFromCallerId(c.Caller),
+    lastChangeStatus: c.LastChangeStatus,
+    status: c.Status,
+    to: createCallerInfoFromCallerId(c.Callee),
+  }));
+}
 
 export async function checkActiveCalls() {
-  const nextActiveCalls = await api.dashboardClient.getActiveCalls();
+  const nextActiveCallsRaw = await api.dashboardClient.getActiveCalls();
+  const nextActiveCalls = parseActiveCalls(nextActiveCallsRaw);
   if (isEqual(activeCalls, nextActiveCalls))
     return;
   activeCalls = nextActiveCalls;
-  activeCallsMonitor.emit('change', activeCalls);
+  activeCallsMonitor.emit('change', nextActiveCalls);
 }
 
 export function getActiveCalls() {
@@ -32,10 +84,10 @@ export function stopMonitorActiveCalls() {
   console.log(TAG, 'stopped');
 }
 
-export function onActiveCallsChange(listener: (activeCalls: IActiveCalls[]) => void) {
+export function onActiveCallsChange(listener: (activeCalls: ActiveCall[]) => void) {
   activeCallsMonitor.on('change', listener);
 }
 
-export function offActiveCallsChange(listener: (activeCalls: IActiveCalls[]) => void) {
+export function offActiveCallsChange(listener: (activeCalls: ActiveCall[]) => void) {
   activeCallsMonitor.off('change', listener);
 }

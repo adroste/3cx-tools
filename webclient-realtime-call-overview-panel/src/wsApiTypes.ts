@@ -1,10 +1,10 @@
-export interface IActiveCalls { // directly from 3CX dashboard API
-  Callee: string;
-  Caller: string;
-  EstablishedAt: string;
-  Id: number;
-  LastChangeStatus: string;
-  Status: string;
+export interface ActiveCall {
+  id: number,
+  establishedAt: string,
+  from: CallerInfo,
+  lastChangeStatus: string,
+  status: string,
+  to: CallerInfo,
 }
 
 export type IncomingOutgoing = 'incoming' | 'outgoing';

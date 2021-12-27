@@ -63,7 +63,7 @@ function getCallerTypeFromDnType(dnType) {
         case 1: return 'External';
         case 5: return 'Voicemail';
         case 6: return 'IVR';
-        default: return 'Other';
+        default: return undefined;
     }
 }
 function clPartyInfoToCallerInfo(dn, dnType, callerNumber, displayName) {

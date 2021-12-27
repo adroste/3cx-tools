@@ -1,8 +1,7 @@
+import { ActiveCall, getActiveCalls, offActiveCallsChange, onActiveCallsChange } from '../func/active-calls';
 import { CallLog, getCallLogs, offCallLogs, onCallLogs } from '../func/call-logs';
 import { checkDnPassword, checkDnReporterAccess } from './auth';
-import { getActiveCalls, offActiveCallsChange, onActiveCallsChange } from '../func/active-calls';
 
-import { IActiveCalls } from '@adroste/3cx-api';
 import { Server } from 'socket.io';
 import { httpServer } from '../web-server';
 
@@ -57,7 +56,7 @@ function setListener() {
 
     let subscribedActiveCalls = false;
 
-    function sendActiveCalls(activeCalls: IActiveCalls[]) {
+    function sendActiveCalls(activeCalls: ActiveCall[]) {
       socket.emit(SEND_MSG.activeCalls, activeCalls)
     }
 

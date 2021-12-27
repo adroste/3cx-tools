@@ -1,10 +1,9 @@
+import { ActiveCall, CallLog, CallerInfo } from './wsApiTypes';
 import { ArrowSmRightIcon, IdentificationIcon, PhoneIcon, PhoneIncomingIcon, PhoneOutgoingIcon, PlusIcon, XIcon } from '@heroicons/react/solid';
-import { CallLog, CallerInfo } from './wsApiTypes';
 import React, { MouseEventHandler, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { addContact, editContact, makeCall } from './integrateUtils';
 
 import { ClockIcon } from '@heroicons/react/outline';
-import { IActiveCalls } from '@adroste/3cx-api';
 import dayjs from 'dayjs';
 import { t } from 'i18next';
 import { useActiveCalls } from './useActiveCalls';
@@ -25,25 +24,25 @@ export function translateActiveCallStatus(status: string) {
 }
 
 export function DisplayCaller({ callerInfo }: { callerInfo: CallerInfo }) {
-  if (callerInfo.displayName)
+  if (callerInfo.displayName && callerInfo.phoneNumber && callerInfo.displayName !== callerInfo.phoneNumber)
     return <span>{`${callerInfo.displayName} (${callerInfo.phoneNumber})`}</span>;
-  return <span>{callerInfo.phoneNumber}</span> || null;
+  return <span>{callerInfo.displayName || callerInfo.phoneNumber || t('Unknown')}</span>;
 }
 
-export function ActiveCallRow({ activeCall }: { activeCall: IActiveCalls }) {
-  const { EstablishedAt, Status } = activeCall;
+export function ActiveCallRow({ activeCall }: { activeCall: ActiveCall }) {
+  const { establishedAt, status } = activeCall;
   const { t } = useTranslation();
   const [duration, setDuration] = useState('00:00:00');
 
   useEffect(() => {
-    const start = dayjs(EstablishedAt);
+    const start = dayjs(establishedAt);
     const update = () => {
       const diff = dayjs.duration(dayjs().diff(start));
       setDuration(diff.format('HH:mm:ss'));
     };
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, [EstablishedAt]);
+  }, [establishedAt]);
 
   return (
     <tr className="bg-lime-200">
@@ -54,7 +53,7 @@ export function ActiveCallRow({ activeCall }: { activeCall: IActiveCalls }) {
               <PhoneIcon className="-scale-x-100 text-blue-500" />
             </div>
             <span className="text-xs text-gray-500">
-              {translateActiveCallStatus(Status)}
+              {translateActiveCallStatus(status)}
             </span>
           </div>
         </div>
@@ -65,7 +64,7 @@ export function ActiveCallRow({ activeCall }: { activeCall: IActiveCalls }) {
           <div className="ml-0">
             <div className="text-sm font-medium text-gray-900">
               {t('{{val, datetime}}', {
-                val: new Date(EstablishedAt), formatParams: {
+                val: new Date(establishedAt), formatParams: {
                   val: { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }
                 }
               })}
@@ -91,10 +90,10 @@ export function ActiveCallRow({ activeCall }: { activeCall: IActiveCalls }) {
 
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-gray-900 font-semibo2ld">
-          {activeCall.Caller}
+          <DisplayCaller callerInfo={activeCall.from} />
         </div>
         <div className="text-gray-900 inline-flex items-center mt-2">
-          {activeCall.Callee}
+          <DisplayCaller callerInfo={activeCall.to} />
         </div>
       </td>
 
@@ -231,7 +230,7 @@ export function CallOverview() {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const activeIds = activeCalls.map(({ Id }) => Id);
+    const activeIds = activeCalls.map(({ id }) => id);
     // refresh call logs everytime active-calls change (by comparing the ids)
     if (
       activeIds.length !== activeCallIdsRef.current.length
@@ -262,7 +261,7 @@ export function CallOverview() {
         <tbody className="bg-white divide-y divide-gray-200">
           {activeCalls.map(activeCall => (
             <ActiveCallRow
-              key={activeCall.Id}
+              key={activeCall.id}
               activeCall={activeCall}
             />
           ))}

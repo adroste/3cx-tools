@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { IActiveCalls } from './wsApiTypes';
+import { ActiveCall } from './wsApiTypes';
 import { wsApiContext } from './WsApiContext';
 
-export function useActiveCalls(): IActiveCalls[] {
+export function useActiveCalls(): ActiveCall[] {
   const { wsApi } = useContext(wsApiContext);
-  const [activeCalls, setActiveCalls] = useState<IActiveCalls[]>([]);
+  const [activeCalls, setActiveCalls] = useState<ActiveCall[]>([]);
 
   useEffect(() => {
     if (!wsApi)
