@@ -26,8 +26,8 @@ function updateCallLogs() {
         const newLogs = yield queryCallLogs(nextId);
         if (newLogs.length > 0) {
             callLogs = [
-                ...newLogs,
-                ...callLogs.slice(0, CALL_LOG_LIMIT - newLogs.length)
+                ...newLogs.slice(0, CALL_LOG_LIMIT),
+                ...callLogs.slice(0, Math.max(CALL_LOG_LIMIT - newLogs.length, 0))
             ];
             callLogsMonitor.emit('callLogs', newLogs);
         }
