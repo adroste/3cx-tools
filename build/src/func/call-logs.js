@@ -89,7 +89,7 @@ LIMIT $2
             return [];
         const maxCallId = calls[0].id;
         const segmentsRes = yield (0, database_1.getDb)().query(`
-SELECT call_id, start_time, end_time, 
+SELECT call_id, cl_segments.id as segment_id, start_time, end_time, 
 	src.dn AS src_dn, src.dn_type as src_dn_type, src.caller_number as src_caller_number, src.display_name as src_display_name, 
 	dst.dn AS dst_dn, dst.dn_type as dst_dn_type, dst.caller_number as dst_caller_number, dst.display_name as dst_display_name 
 FROM public.cl_segments
@@ -111,12 +111,14 @@ ORDER BY call_id ASC, seq_order ASC
                 direction: from.type === 'Internal' ? 'outgoing' : 'incoming',
                 endTime: s.end_time,
                 from,
+                segmentId: s.segment_id,
                 startTime: s.start_time,
                 to,
             });
             return segmentsById;
         }, {});
         const callLogs = calls.map(call => {
+            var _a;
             const segments = segmentsById[call.id];
             let extCaller = segments[0].direction === 'incoming'
                 ? segments[0].from : segments[0].to;
@@ -138,7 +140,7 @@ ORDER BY call_id ASC, seq_order ASC
                 segments,
                 extCaller,
                 startTime: call.start_time,
-                talkingDuration: call.talking_dur,
+                talkingDuration: (_a = call.talking_dur) === null || _a === void 0 ? void 0 : _a.toISOString(),
             };
         });
         return callLogs;

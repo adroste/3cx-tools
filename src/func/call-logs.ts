@@ -23,6 +23,7 @@ export interface CallSegment {
   direction: IncomingOutgoing,
   endTime: string;
   from: CallerInfo;
+  segmentId: number,
   startTime: string;
   to: CallerInfo;
 }
@@ -38,16 +39,30 @@ export interface CallLog {
   talkingDuration?: string,
 }
 
+interface IPostgresInterval {
+  years?: number;
+  months?: number;
+  days?: number;
+  hours?: number;
+  minutes?: number;
+  seconds?: number;
+  milliseconds?: number;
+  toPostgres(): string;
+  toISO(): string;
+  toISOString(): string;
+}
+
 interface ClCallsRows {
   id: number,
   start_time: string,
   end_time: string,
   is_answered: boolean,
-  talking_dur?: string,
+  talking_dur?: IPostgresInterval,
 }
 
 interface ClSegmentsJoinedClPartyInfoRow {
   call_id: number,
+  segment_id: number,
   start_time: string,
   end_time: string,
   src_dn?: string,
@@ -144,7 +159,7 @@ LIMIT $2
     return [];
   const maxCallId = calls[0].id; // because of ordered, first element must be "newest"
   const segmentsRes = await getDb().query(`
-SELECT call_id, start_time, end_time, 
+SELECT call_id, cl_segments.id as segment_id, start_time, end_time, 
 	src.dn AS src_dn, src.dn_type as src_dn_type, src.caller_number as src_caller_number, src.display_name as src_display_name, 
 	dst.dn AS dst_dn, dst.dn_type as dst_dn_type, dst.caller_number as dst_caller_number, dst.display_name as dst_display_name 
 FROM public.cl_segments
@@ -171,6 +186,7 @@ ORDER BY call_id ASC, seq_order ASC
       direction: from.type === 'Internal' ? 'outgoing' : 'incoming',
       endTime: s.end_time,
       from,
+      segmentId: s.segment_id,
       startTime: s.start_time,
       to,
     });
@@ -198,7 +214,7 @@ ORDER BY call_id ASC, seq_order ASC
       segments,
       extCaller,
       startTime: call.start_time,
-      talkingDuration: call.talking_dur,
+      talkingDuration: call.talking_dur?.toISOString(),
     };
   });
 
