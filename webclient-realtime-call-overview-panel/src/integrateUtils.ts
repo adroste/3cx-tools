@@ -28,7 +28,7 @@ export function makeCall(phoneNumber: string) {
   }, 500);
 }
 
-export function editContact(id: string) {
+export function editContact(id: string | number) {
   goTo(`#/contacts/edit/1/${id}`);
 }
 

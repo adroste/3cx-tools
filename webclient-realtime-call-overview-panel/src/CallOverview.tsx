@@ -1,11 +1,10 @@
 import { ArrowSmRightIcon, IdentificationIcon, PhoneIcon, PhoneIncomingIcon, PhoneOutgoingIcon, PlusIcon, XIcon } from '@heroicons/react/solid';
-import { CallerId, usePhoneBook } from './usePhoneBook';
+import { CallLog, CallerInfo } from './wsApiTypes';
 import React, { MouseEventHandler, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { addContact, editContact, makeCall } from './integrateUtils';
 
 import { ClockIcon } from '@heroicons/react/outline';
 import { IActiveCalls } from '@adroste/3cx-api';
-import { ICallChain } from './parseLogs';
 import dayjs from 'dayjs';
 import { t } from 'i18next';
 import { useActiveCalls } from './useActiveCalls';
@@ -25,7 +24,13 @@ export function translateActiveCallStatus(status: string) {
   }
 }
 
-export function ActiveCallRow({ activeCall, callerId, calleeId }: { activeCall: IActiveCalls, callerId: CallerId, calleeId: CallerId }) {
+export function DisplayCaller({ callerInfo }: { callerInfo: CallerInfo }) {
+  if (callerInfo.displayName)
+    return <span>{`${callerInfo.displayName} (${callerInfo.phoneNumber})`}</span>;
+  return <span>{callerInfo.phoneNumber}</span> || null;
+}
+
+export function ActiveCallRow({ activeCall }: { activeCall: IActiveCalls }) {
   const { EstablishedAt, Status } = activeCall;
   const { t } = useTranslation();
   const [duration, setDuration] = useState('00:00:00');
@@ -86,10 +91,10 @@ export function ActiveCallRow({ activeCall, callerId, calleeId }: { activeCall: 
 
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-gray-900 font-semibo2ld">
-          {callerId.display}
+          {activeCall.Caller}
         </div>
         <div className="text-gray-900 inline-flex items-center mt-2">
-          {calleeId.display}
+          {activeCall.Callee}
         </div>
       </td>
 
@@ -100,34 +105,34 @@ export function ActiveCallRow({ activeCall, callerId, calleeId }: { activeCall: 
 }
 
 
-export function CallOverviewRow({ callChain, callerId }: { callChain: ICallChain, callerId: CallerId }) {
-  const { answered, chain, direction, extId, time, totalDuration } = callChain;
+export function CallOverviewRow({ callLog }: { callLog: CallLog }) {
+  const { answered, direction, extCaller, segments, startTime, talkingDuration } = callLog;
   const { t } = useTranslation();
 
   const actions: Array<{ icon: ReactNode, title: string, onClick: MouseEventHandler }> = useMemo(() => {
     const actions = [];
-    if (callerId.phoneNumber) {
+    if (extCaller.phoneNumber) {
       actions.push({
         icon: <PhoneIcon />,
         title: t('Make Call'),
-        onClick: () => makeCall(callerId.phoneNumber!)
+        onClick: () => makeCall(extCaller.phoneNumber!)
       });
-      if (callerId.phoneBookEntry) {
+      if (extCaller.phoneBookId) {
         actions.push({
           icon: <IdentificationIcon />,
           title: t('Show Contact'),
-          onClick: () => editContact(callerId.phoneBookEntry!.Id)
+          onClick: () => editContact(extCaller.phoneBookId!)
         });
       } else {
         actions.push({
           icon: <PlusIcon />,
           title: t('Add Contact'),
-          onClick: () => addContact(callerId.phoneNumber!)
+          onClick: () => addContact(extCaller.phoneNumber!)
         });
       }
     }
     return actions;
-  }, [callerId, t]);
+  }, [extCaller, t]);
 
 
   return (
@@ -153,17 +158,17 @@ export function CallOverviewRow({ callChain, callerId }: { callChain: ICallChain
           <div className="ml-0">
             <div className="text-sm font-medium text-gray-900">
               {t('{{val, datetime}}', {
-                val: new Date(time), formatParams: {
+                val: new Date(startTime), formatParams: {
                   val: { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }
                 }
               })}
             </div>
             <div className="mt-1 text-xs font-medium text-gray-500">
-              {answered
+              {answered && talkingDuration
                 ? (
                   <span className="px-2 inline-flex items-center leading-5 rounded-full bg-green-100 text-green-800">
                     <ClockIcon className="h-3.5 w-3.5 mr-1" />
-                    {totalDuration}
+                    {dayjs.duration(talkingDuration).add(0,'s').format('HH:mm:ss') /* .add(0,'s') is a workaround to dayjs bug when parsing ISO8601 durations with floating points */}
                   </span>
                 ) : (
                   <span className="px-2 inline-flex items-center leading-5 rounded-full bg-red-100 text-red-800">
@@ -188,12 +193,12 @@ export function CallOverviewRow({ callChain, callerId }: { callChain: ICallChain
 
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-gray-900 font-semibold">
-          {callerId.display}
+          <DisplayCaller callerInfo={extCaller} />
         </div>
         <div className="text-sm text-gray-500 inline-flex items-center">
-          {chain.map(({ CallerId, Destination, Direction, CallTime }) => (
-            <React.Fragment key={`${CallTime}-${CallerId}-${Destination}`}>
-              <span>{Direction === 'incoming' ? Destination : CallerId}</span>
+          {segments.map(({ direction, segmentId, from, to }) => (
+            <React.Fragment key={segmentId}>
+              <DisplayCaller callerInfo={direction === 'incoming' ? to : from} />
               <span className="last:hidden"><ArrowSmRightIcon className="h-4 w-4 mx-1" /></span>
             </React.Fragment>
           ))}
@@ -220,9 +225,8 @@ export function CallOverviewRow({ callChain, callerId }: { callChain: ICallChain
 
 export function CallOverview() {
   const { t } = useTranslation();
-  const [resolveCaller,] = usePhoneBook();
-  const [callLogs, refreshCallLogs] = useCallLogs();
-  const [activeCalls,] = useActiveCalls();
+  const callLogs = useCallLogs();
+  const activeCalls = useActiveCalls();
   const activeCallIdsRef = useRef<number[]>([]);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -234,12 +238,11 @@ export function CallOverview() {
       || !activeIds.every((id) => activeCallIdsRef.current.includes(id))
     ) {
       activeCallIdsRef.current = activeIds;
-      refreshCallLogs();
 
       // scroll back to top, so the user can't miss out on new calls
       wrapperRef.current?.scrollTo(0,0);
     }
-  }, [activeCalls, refreshCallLogs]);
+  }, [activeCalls]);
 
   return (
     <div className="overflow-y-scroll overflow-x-auto h-full max-h-full" ref={wrapperRef}>
@@ -261,15 +264,12 @@ export function CallOverview() {
             <ActiveCallRow
               key={activeCall.Id}
               activeCall={activeCall}
-              callerId={resolveCaller(activeCall.Caller)}
-              calleeId={resolveCaller(activeCall.Callee)}
             />
           ))}
-          {callLogs.map(callChain => (
+          {callLogs.map(callLog => (
             <CallOverviewRow
-              key={`${callChain.chain[0].CallTime}-${callChain.chain[0].CallerId}-${callChain.chain[0].Destination}`}
-              callChain={callChain}
-              callerId={resolveCaller(callChain.extId)}
+              key={callLog.id}
+              callLog={callLog}
             />
           ))}
         </tbody>

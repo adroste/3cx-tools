@@ -1,30 +1,18 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import { IActiveCalls } from '@adroste/3cx-api';
-import { cxContext } from './CxContext';
-import isEqual from 'lodash/isEqual';
+import { IActiveCalls } from './wsApiTypes';
+import { wsApiContext } from './WsApiContext';
 
-const UPDATE_INTERVAL = 3000;
-
-export function useActiveCalls(): [IActiveCalls[], () => Promise<void>] {
-  const { dashboardApi } = useContext(cxContext);
+export function useActiveCalls(): IActiveCalls[] {
+  const { wsApi } = useContext(wsApiContext);
   const [activeCalls, setActiveCalls] = useState<IActiveCalls[]>([]);
-  const activeCallsRef = useRef<IActiveCalls[]>();
-
-  const refresh = useCallback(async () => {
-    if (!dashboardApi)
-      return;
-    const activeCalls = await dashboardApi.getActiveCalls();
-    if (isEqual(activeCalls, activeCallsRef.current))
-      return;
-    activeCallsRef.current = activeCalls;
-    setActiveCalls(activeCalls);
-  }, [dashboardApi]);
 
   useEffect(() => {
-    const interval = setInterval(refresh, UPDATE_INTERVAL);
-    return () => clearInterval(interval);
-  }, [refresh]);
+    if (!wsApi)
+      return;
+    wsApi.subscribeActiveCalls(setActiveCalls);
+    return () => wsApi.unsubscribeActiveCalls(setActiveCalls);
+  }, [wsApi]);
 
-  return [activeCalls, refresh];
+  return activeCalls;
 }

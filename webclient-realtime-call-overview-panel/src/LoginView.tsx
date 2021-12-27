@@ -1,25 +1,19 @@
-import { FormEvent, useCallback, useContext, useState } from 'react';
+import { FormEvent, useCallback, useContext } from 'react';
 
-import { cxContext } from './CxContext';
 import { useTranslation } from 'react-i18next';
+import { wsApiContext } from './WsApiContext';
 
 export function LoginView() {
-  const { login } = useContext(cxContext);
+  const { login, connectError } = useContext(wsApiContext);
   const { t } = useTranslation();
-  const [error, setError] = useState<any>();
 
   const onSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
     const target = event.target as HTMLFormElement;
     const username = target.username.value;
     const password = target.password.value;
-    try {
-      if (username && password)
-        await login?.(username, password);
-    } catch (e: any) {
-      setError(e);
-    }
+    if (username && password)
+      await login?.(username, password);
   }, [login]);
 
   return (
@@ -29,7 +23,10 @@ export function LoginView() {
           3CX {t('Login')}
         </h2>
         <p className="mt-2 text-center text text-gray-600">
-          {t('Management Console')}
+          {t('Management Console')} 
+        </p>
+        <p className="mt-2 text-xs text-center text text-gray-600">
+          {t('Requires Management Console access with enabled monitor rights.')} 
         </p>
       </div>
 
@@ -62,9 +59,10 @@ export function LoginView() {
               <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
                 {t('Login')}
               </button>
-              {error &&
+              {connectError &&
                 <p className="mt-2 text-center text text-red-600">
-                  {t('Login not successful')}
+                  {t('Login not successful')} <br/>
+                  <span className="text-xs">(Error: "{connectError}")</span>
                 </p>
               }
             </div>

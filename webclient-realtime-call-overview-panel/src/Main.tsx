@@ -1,10 +1,10 @@
 import { CallOverview } from './CallOverview';
 import { LoginView } from './LoginView';
-import { cxContext } from './CxContext';
 import { useContext } from 'react';
+import { wsApiContext } from './WsApiContext';
 
 export function Main() {
-  const { loggedIn } = useContext(cxContext);
+  const { loggedIn } = useContext(wsApiContext);
 
   if (!loggedIn)
     return <LoginView />;

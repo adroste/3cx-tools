@@ -1,37 +1,18 @@
-import { ICallChain, parseLogs } from './parseLogs';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import { ICallLogsParameters } from '@adroste/3cx-api';
-import { cxContext } from './CxContext';
+import { CallLog } from './wsApiTypes';
+import { wsApiContext } from './WsApiContext';
 
-const defaultParams: ICallLogsParameters = {
-  TimeZoneName: encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone), // get time zone of browser
-  callState: 'All',
-  dateRangeType: 'LastSevenDays',
-  fromFilter: '',
-  fromFilterType: 'Any',
-  numberOfRows: 1000,
-  searchFilter: '',
-  startRow: 0,
-  toFilter: '',
-  toFilterType: 'Any',
-};
-
-export function useCallLogs(): [ICallChain[], () => Promise<void>] {
-  const { api } = useContext(cxContext);
-  const [callLogs, setCallLogs] = useState<ICallChain[]>([]);
-
-  const refresh = useCallback(async () => {
-    if (!api)
-      return;
-    const callLogList = await api.getCallLogList(defaultParams);
-    const logs = parseLogs(callLogList.CallLogRows);
-    setCallLogs(logs);
-  }, [api]);
+export function useCallLogs(): CallLog[] {
+  const { wsApi } = useContext(wsApiContext);
+  const [callLogs, setCallLogs] = useState<CallLog[]>([]);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    if (!wsApi)
+      return;
+    wsApi.subscribeCallLogs(setCallLogs);
+    return () => wsApi.unsubscribeCallLogs(setCallLogs);
+  }, [wsApi]);
 
-  return [callLogs, refresh];
+  return callLogs;
 }

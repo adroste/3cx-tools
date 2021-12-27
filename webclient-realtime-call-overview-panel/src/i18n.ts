@@ -18,7 +18,7 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     backend: {
-      loadPath: '/webclient/tcx-tools-panel-app/locales/{{lng}}/{{ns}}.json'
+      loadPath: '/3cx-tools/call-overview-panel/locales/{{lng}}/{{ns}}.json'
     },
     fallbackLng: 'en',
     debug: true,

@@ -2,15 +2,13 @@
   "name": "webclient-realtime-call-overview-panel",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/webclient/tcx-tools-panel-app/",
+  "homepage": "/3cx-tools/call-overview-panel",
   "dependencies": {
-    "@adroste/3cx-api": "^0.36.1",
     "@heroicons/react": "^1.0.5",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^27.0.3",
-    "@types/lodash": "^4.14.178",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
@@ -19,18 +17,17 @@
     "i18next": "^21.6.0",
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-http-backend": "^1.3.1",
-    "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-i18next": "^11.15.1",
     "react-scripts": "next",
+    "socket.io-client": "^4.4.0",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "cors-proxy": "NODE_TLS_REJECT_UNAUTHORIZED=0 lcp --proxyUrl https://192.168.178.33:5001 --port 8010 --proxyPartial / --credentials --origin http://localhost:3000",
     "test": "jest"
   },
   "eslintConfig": {
@@ -54,7 +51,6 @@
   "devDependencies": {
     "autoprefixer": "^10.4.0",
     "jest": "^27.4.4",
-    "local-cors-proxy": "^1.1.0",
     "postcss": "^8.4.5",
     "tailwindcss": "^3.0.1",
     "ts-jest": "^27.1.1"
