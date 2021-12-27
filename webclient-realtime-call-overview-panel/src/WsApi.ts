@@ -75,8 +75,8 @@ export class WsApi {
 
   cacheCallLogs = (callLogs: CallLog[]) => {
     this.cache.callLogs = [
-      ...callLogs,
-      ...this.cache.callLogs.slice(0, CALL_LOG_LIMIT - callLogs.length)
+      ...callLogs.slice(0, CALL_LOG_LIMIT),
+      ...this.cache.callLogs.slice(0, Math.max(CALL_LOG_LIMIT - callLogs.length, 0))
     ];
   }
 

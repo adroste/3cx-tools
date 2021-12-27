@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/webclient/tcx-tools-panel-app/static/css/main.e97911c8.css",
-    "main.js": "/webclient/tcx-tools-panel-app/static/js/main.45117b93.js",
-    "static/js/787.edd5c5e7.chunk.js": "/webclient/tcx-tools-panel-app/static/js/787.edd5c5e7.chunk.js",
-    "index.html": "/webclient/tcx-tools-panel-app/index.html",
-    "static/media/getFetch.cjs": "/webclient/tcx-tools-panel-app/static/media/getFetch.c780682470504fffbd04.cjs",
-    "main.e97911c8.css.map": "/webclient/tcx-tools-panel-app/static/css/main.e97911c8.css.map",
-    "main.45117b93.js.map": "/webclient/tcx-tools-panel-app/static/js/main.45117b93.js.map",
-    "787.edd5c5e7.chunk.js.map": "/webclient/tcx-tools-panel-app/static/js/787.edd5c5e7.chunk.js.map"
+    "main.css": "/3cx-tools/call-overview-panel/static/css/main.1c3ebfe4.css",
+    "main.js": "/3cx-tools/call-overview-panel/static/js/main.4f8bbf9c.js",
+    "static/js/787.edd5c5e7.chunk.js": "/3cx-tools/call-overview-panel/static/js/787.edd5c5e7.chunk.js",
+    "index.html": "/3cx-tools/call-overview-panel/index.html",
+    "static/media/getFetch.cjs": "/3cx-tools/call-overview-panel/static/media/getFetch.c780682470504fffbd04.cjs",
+    "main.1c3ebfe4.css.map": "/3cx-tools/call-overview-panel/static/css/main.1c3ebfe4.css.map",
+    "main.4f8bbf9c.js.map": "/3cx-tools/call-overview-panel/static/js/main.4f8bbf9c.js.map",
+    "787.edd5c5e7.chunk.js.map": "/3cx-tools/call-overview-panel/static/js/787.edd5c5e7.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e97911c8.css",
-    "static/js/main.45117b93.js"
+    "static/css/main.1c3ebfe4.css",
+    "static/js/main.4f8bbf9c.js"
   ]
 }

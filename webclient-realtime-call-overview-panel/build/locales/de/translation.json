@@ -18,7 +18,9 @@
   "Connected": "Verbunden",
   "Transferring": "Weiterleiten",
   "Login": "Anmelden",
+  "Login not successful": "Login nicht erfolgreich",
   "Username": "Nutzername",
   "Password": "Passwort",
-  "Management Console": "Verwaltungskonsole"
+  "Unknown": "Unbekannt",
+  "LoginAccessHint": "Benötigt Zugriff auf 3CX-Verwaltungskonsole mit Überwachungsrechten."
 }
