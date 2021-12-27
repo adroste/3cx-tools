@@ -22,11 +22,8 @@ export function LoginView() {
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           3CX {t('Login')}
         </h2>
-        <p className="mt-2 text-center text text-gray-600">
-          {t('Management Console')} 
-        </p>
         <p className="mt-2 text-xs text-center text text-gray-600">
-          {t('Requires Management Console access with enabled monitor rights.')} 
+          {t('LoginAccessHint')} 
         </p>
       </div>
 

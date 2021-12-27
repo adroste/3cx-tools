@@ -18,7 +18,9 @@
   "Connected": "Connected",
   "Transferring": "Transferring",
   "Login": "Login",
+  "Login not successful": "Login not successful",
   "Username": "Username",
   "Password": "Password",
-  "Management Console": "Management Console"
+  "Unknown": "Unknown",
+  "LoginAccessHint": "Requires 3CX Management Console access with enabled monitor rights."
 }
