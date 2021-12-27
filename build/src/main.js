@@ -13,6 +13,7 @@ const config_1 = require("./config");
 const active_calls_1 = require("./func/active-calls");
 const call_logs_1 = require("./func/call-logs");
 const phonebook_1 = require("./func/phonebook");
+const caller_id_1 = require("./func/caller-id");
 const phonebook_fanvil_1 = require("./func/phonebook-fanvil");
 const phonebook_snom_1 = require("./func/phonebook-snom");
 const phonebook_yealink_1 = require("./func/phonebook-yealink");
@@ -59,6 +60,7 @@ program
     yield (0, connection_1.connectTo3cxApi)();
     (0, ws_api_1.initWsApi)();
     yield (0, phonebook_1.monitorPhonebook)();
+    yield (0, caller_id_1.startCallerId)();
     (0, phonebook_yealink_1.startPhonebookPatcherYealink)();
     (0, phonebook_fanvil_1.startPhonebookPatcherFanvil)();
     (0, phonebook_snom_1.startPhonebookPatcherSnom)();

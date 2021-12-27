@@ -11,6 +11,7 @@ import { loadConfig } from './config';
 import { monitorActiveCalls } from './func/active-calls';
 import { monitorCallLogs } from './func/call-logs';
 import { monitorPhonebook } from './func/phonebook';
+import { startCallerId } from './func/caller-id';
 import { startPhonebookPatcherFanvil } from './func/phonebook-fanvil';
 import { startPhonebookPatcherSnom } from './func/phonebook-snom';
 import { startPhonebookPatcherYealink } from './func/phonebook-yealink';
@@ -69,6 +70,7 @@ program
 
     // func modules
     await monitorPhonebook();
+    await startCallerId();
     startPhonebookPatcherYealink();
     startPhonebookPatcherFanvil();
     startPhonebookPatcherSnom();
