@@ -36,6 +36,7 @@ function initWsApi() {
         }
         else {
             next(new Error('authentication failed'));
+            socket.disconnect();
         }
     }));
     setListener();

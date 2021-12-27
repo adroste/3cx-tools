@@ -43,6 +43,7 @@ export function initWsApi() {
       next(); // auth successful
     } else {
       next(new Error('authentication failed'));
+      socket.disconnect();
     }
   });
 
