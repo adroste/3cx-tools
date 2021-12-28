@@ -1,23 +1,14 @@
 import { FSWatcher, watch } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
 
-import { copy } from 'fs-extra';
 import { debounce } from 'lodash';
-import { exec } from 'child_process';
 import { getConfig } from './config';
 import { join } from 'path';
-import { promisify } from 'util';
 
 const TAG = '[Call Overview Panel]';
 
-async function copyBuild() {
-  const panelAppPath = join(getConfig().webclientDir, '/tcx-tools-panel-app');
-  await copy(getConfig().webclientCallOverviewPanelBuildDir, panelAppPath);
-  await promisify(exec)(`chmod -R ugo+rw "${panelAppPath}"`);
-}
-
 async function patchIndexHtml() {
-  const scriptTag = '<script src="/webclient/tcx-tools-panel-app/integrate-webclient.js"></script>';
+  const scriptTag = '<script src="/3cx-tools/call-overview-panel/integrate-webclient.js"></script>';
   const indexHtmlPath = join(getConfig().webclientDir, '/index.html');
 
   const html = await readFile(indexHtmlPath, 'utf-8');
@@ -42,7 +33,6 @@ function registerFileWatcher() {
 }
 
 export async function installWebclientCallOverviewPanel() {
-  await copyBuild();
   await patchIndexHtml();
   console.log(TAG, 'installed');
   if (!fileWatcher)

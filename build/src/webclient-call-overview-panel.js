@@ -4,23 +4,13 @@ exports.installWebclientCallOverviewPanel = void 0;
 const tslib_1 = require("tslib");
 const fs_1 = require("fs");
 const promises_1 = require("fs/promises");
-const fs_extra_1 = require("fs-extra");
 const lodash_1 = require("lodash");
-const child_process_1 = require("child_process");
 const config_1 = require("./config");
 const path_1 = require("path");
-const util_1 = require("util");
 const TAG = '[Call Overview Panel]';
-function copyBuild() {
-    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        const panelAppPath = (0, path_1.join)((0, config_1.getConfig)().webclientDir, '/tcx-tools-panel-app');
-        yield (0, fs_extra_1.copy)((0, config_1.getConfig)().webclientCallOverviewPanelBuildDir, panelAppPath);
-        yield (0, util_1.promisify)(child_process_1.exec)(`chmod -R ugo+rw "${panelAppPath}"`);
-    });
-}
 function patchIndexHtml() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        const scriptTag = '<script src="/webclient/tcx-tools-panel-app/integrate-webclient.js"></script>';
+        const scriptTag = '<script src="/3cx-tools/call-overview-panel/integrate-webclient.js"></script>';
         const indexHtmlPath = (0, path_1.join)((0, config_1.getConfig)().webclientDir, '/index.html');
         const html = yield (0, promises_1.readFile)(indexHtmlPath, 'utf-8');
         if (!html.includes(scriptTag)) {
@@ -39,7 +29,6 @@ function registerFileWatcher() {
 }
 function installWebclientCallOverviewPanel() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        yield copyBuild();
         yield patchIndexHtml();
         console.log(TAG, 'installed');
         if (!fileWatcher)
