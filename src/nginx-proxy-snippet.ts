@@ -46,8 +46,13 @@ export async function installNginxProxySnippet() {
 }
 
 export async function uninstallNginxProxySnippet() {
-  await unlink(getConfig().nginxProxySnippetInstallFile);
-  console.log(TAG, `removed nginx proxy snippet from "${getConfig().nginxProxySnippetInstallFile}"`);
+  console.log(TAG, `removing nginx proxy snippet from "${getConfig().nginxProxySnippetInstallFile}"`);
+
+  try {
+    await unlink(getConfig().nginxProxySnippetInstallFile);
+  } catch (err) {
+    console.log(TAG, 'error removing nginx proxy snippet, maybe it is already removed')
+  }
 
   if (process.env.NODE_ENV === 'development') {
     console.log(TAG, 'skipped systemd nginx reload because app runs in development mode (NODE_ENV == "development")');

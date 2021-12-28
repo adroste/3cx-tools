@@ -44,15 +44,20 @@ exports.installAsService = installAsService;
 function uninstallService() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         console.log(TAG, 'removing systemd service');
-        if (process.env.NODE_ENV === 'development') {
-            console.log(TAG, 'skipped systemd changes because app runs in development mode (NODE_ENV == "development")');
+        try {
+            if (process.env.NODE_ENV === 'development') {
+                console.log(TAG, 'skipped systemd changes because app runs in development mode (NODE_ENV == "development")');
+            }
+            else {
+                yield exec('sudo systemctl stop 3cx-tools-server');
+                yield exec('sudo systemctl disable 3cx-tools-server');
+            }
+            yield (0, promises_1.unlink)((0, config_1.getConfig)().serviceInstallFile);
+            console.log(TAG, 'systemd service stopped, disabled and removed.');
         }
-        else {
-            yield exec('sudo systemctl stop 3cx-tools-server');
-            yield exec('sudo systemctl disable 3cx-tools-server');
+        catch (err) {
+            console.log(TAG, 'error removing service, maybe the service is already stopped/removed');
         }
-        yield (0, promises_1.unlink)((0, config_1.getConfig)().serviceInstallFile);
-        console.log(TAG, 'systemd service stopped, disabled and removed.');
     });
 }
 exports.uninstallService = uninstallService;
