@@ -61,7 +61,13 @@ export function parseActiveCalls(activeCalls: IActiveCalls[]): ActiveCall[] {
 }
 
 export async function checkActiveCalls() {
-  const nextActiveCallsRaw = await api.dashboardClient.getActiveCalls();
+  let nextActiveCallsRaw: IActiveCalls[];
+  try {
+    nextActiveCallsRaw = await api.dashboardClient.getActiveCalls();
+  } catch (err) { 
+    console.error(TAG, 'active calls check failed', err);
+    return;
+  }
   const nextActiveCalls = parseActiveCalls(nextActiveCallsRaw);
   if (isEqual(activeCalls, nextActiveCalls))
     return;

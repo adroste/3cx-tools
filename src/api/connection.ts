@@ -3,6 +3,10 @@ import { ConsoleClient, DashboardClient, IHttpClient, createClient } from '@adro
 import { Axios } from 'axios';
 import { getDb } from '../database';
 
+const TAG = '[3CX REST API]';
+const RECONNECT_MAX_TRY = 1000;
+let reconnectTimeout: NodeJS.Timer | null = null;
+
 export let api: {
   httpClient: IHttpClient,
   consoleClient: ConsoleClient,
@@ -22,14 +26,37 @@ async function getApiLoginCredentials() {
   } as const;
 }
 
+function reconnectLoop(i = 1) {
+  if (reconnectTimeout)
+    return;
+
+  if (i === RECONNECT_MAX_TRY)
+    throw new Error('3cx rest api max reconnect attempts exceeded');
+
+  reconnectTimeout = setTimeout(async () => {
+    try {
+      await connectTo3cxApi();
+    } catch (err) {
+      console.error(TAG, `reconnect failed (${i}), trying againg...`);
+      reconnectTimeout = null;
+      reconnectLoop(i + 1);
+    }
+  }, 1000);
+}
+
 export async function connectTo3cxApi() {
   const credentials = await getApiLoginCredentials();
   const httpClient = await createClient('http://localhost:5000',
    { Username: credentials.username, Password: credentials.password });
 
+  console.log(TAG, 'connected');
+
   (httpClient as Axios).interceptors.response.use(response => response, error => {
-    if (error.response.status === 401) { // unauthorized
-      connectTo3cxApi(); // self healing
+    if (
+      !error?.response // service down
+      || error.response.status === 401 // unauthorized
+    ) { 
+      reconnectLoop(); // self healing
     } 
     return Promise.reject(error);
   });

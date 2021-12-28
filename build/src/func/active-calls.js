@@ -47,7 +47,14 @@ function parseActiveCalls(activeCalls) {
 exports.parseActiveCalls = parseActiveCalls;
 function checkActiveCalls() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        const nextActiveCallsRaw = yield connection_1.api.dashboardClient.getActiveCalls();
+        let nextActiveCallsRaw;
+        try {
+            nextActiveCallsRaw = yield connection_1.api.dashboardClient.getActiveCalls();
+        }
+        catch (err) {
+            console.error(TAG, 'active calls check failed', err);
+            return;
+        }
         const nextActiveCalls = parseActiveCalls(nextActiveCallsRaw);
         if ((0, lodash_1.isEqual)(activeCalls, nextActiveCalls))
             return;
