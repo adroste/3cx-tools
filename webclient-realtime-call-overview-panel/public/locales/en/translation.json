@@ -22,5 +22,9 @@
   "Username": "Username",
   "Password": "Password",
   "Unknown": "Unknown",
-  "LoginAccessHint": "Requires 3CX Management Console access with enabled monitor rights."
+  "LoginAccessHint": "Requires 3CX Management Console access with enabled monitor rights.",
+  "IVR": "IVR",
+  "Voicemail": "Voicemail",
+  "External": "External",
+  "Internal": "Internal"
 }

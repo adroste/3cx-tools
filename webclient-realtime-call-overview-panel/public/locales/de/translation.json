@@ -22,5 +22,9 @@
   "Username": "Nutzername",
   "Password": "Passwort",
   "Unknown": "Unbekannt",
-  "LoginAccessHint": "Benötigt Zugriff auf 3CX-Verwaltungskonsole mit Überwachungsrechten."
+  "LoginAccessHint": "Benötigt Zugriff auf 3CX-Verwaltungskonsole mit Überwachungsrechten.",
+  "IVR": "IVR",
+  "Voicemail": "Mailbox",
+  "External": "Extern",
+  "Internal": "Intern"
 }

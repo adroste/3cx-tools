@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/3cx-tools/call-overview-panel/static/css/main.1c3ebfe4.css",
-    "main.js": "/3cx-tools/call-overview-panel/static/js/main.4f8bbf9c.js",
+    "main.css": "/3cx-tools/call-overview-panel/static/css/main.5f2f0c3d.css",
+    "main.js": "/3cx-tools/call-overview-panel/static/js/main.c03365e6.js",
     "static/js/787.edd5c5e7.chunk.js": "/3cx-tools/call-overview-panel/static/js/787.edd5c5e7.chunk.js",
     "index.html": "/3cx-tools/call-overview-panel/index.html",
     "static/media/getFetch.cjs": "/3cx-tools/call-overview-panel/static/media/getFetch.c780682470504fffbd04.cjs",
-    "main.1c3ebfe4.css.map": "/3cx-tools/call-overview-panel/static/css/main.1c3ebfe4.css.map",
-    "main.4f8bbf9c.js.map": "/3cx-tools/call-overview-panel/static/js/main.4f8bbf9c.js.map",
+    "main.5f2f0c3d.css.map": "/3cx-tools/call-overview-panel/static/css/main.5f2f0c3d.css.map",
+    "main.c03365e6.js.map": "/3cx-tools/call-overview-panel/static/js/main.c03365e6.js.map",
     "787.edd5c5e7.chunk.js.map": "/3cx-tools/call-overview-panel/static/js/787.edd5c5e7.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1c3ebfe4.css",
-    "static/js/main.4f8bbf9c.js"
+    "static/css/main.5f2f0c3d.css",
+    "static/js/main.c03365e6.js"
   ]
 }

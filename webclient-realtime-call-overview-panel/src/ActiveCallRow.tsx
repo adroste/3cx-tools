@@ -37,8 +37,8 @@ export function ActiveCallRow({ activeCall }: { activeCall: ActiveCall }) {
   }, [establishedAt]);
 
   return (
-    <div className="bg-lime-200 py-3 px-4 grid grid-cols-[60px_1fr_2fr_88px] gap-10 items-center">
-      <div className="flex items-center flex-col">
+    <div className="bg-lime-200 py-3 px-4 grid grid-cols-[60px_1fr_2fr_88px] gap-10 gap-y-1 items-center">
+      <div className="flex items-center flex-col whitespace-nowrap row-span-2 md:row-span-1">
         <div className="flex-shrink-0 h-7 w-7">
           <PhoneIcon className="-scale-x-100 text-blue-500" />
         </div>
@@ -47,8 +47,8 @@ export function ActiveCallRow({ activeCall }: { activeCall: ActiveCall }) {
         </span>
       </div>
 
-      <div className="flex items-center">
-        <div className="ml-0">
+      <div className="flex items-center col-span-3 md:col-span-1">
+        <div className="ml-0 flex items-center md:block">
           <div className="text-sm font-medium text-gray-900 whitespace-pre-wrap">
             {t('{{val, datetime}}', {
               val: new Date(establishedAt), formatParams: {
@@ -56,7 +56,7 @@ export function ActiveCallRow({ activeCall }: { activeCall: ActiveCall }) {
               }
             })}
           </div>
-          <div className="mt-1 text-xs font-medium text-gray-500 whitespace-pre-wrap">
+          <div className="text-xs font-medium text-gray-500 whitespace-pre-wrap ml-2 md:ml-0 md:mt-1">
             <span className="px-2 inline-flex items-center leading-5 rounded-full bg-blue-100 text-green-800">
               <ClockIcon className="h-3.5 w-3.5 mr-1" />
               {duration}
@@ -65,22 +65,20 @@ export function ActiveCallRow({ activeCall }: { activeCall: ActiveCall }) {
         </div>
       </div>
 
-      <div>
-        <div className="text-gray-500 font-semibold text-[10px]">
+      <div className="row-start-2 col-span-3 col-start-2 md:row-start-1 md:col-span-2 md:col-start-3">
+        <div className="text-gray-500 font-semibold text-[10px] leading-none">
           {t('Caller')}
         </div>
         <div className="text-gray-900 leading-5">
           <Caller callerInfo={activeCall.from} />
         </div>
-        <div className="text-gray-500 font-semibold text-[10px] mt-1">
+        <div className="text-gray-500 font-semibold text-[10px] leading-none mt-1">
           {t('Callee')} 
         </div>
         <div className="text-gray-900 leading-5">
           <Caller callerInfo={activeCall.to} />
         </div>
       </div>
-
-      <div></div>
     </div>
   );
 }

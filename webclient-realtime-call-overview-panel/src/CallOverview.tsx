@@ -33,11 +33,19 @@ export function CallOverview() {
       <div className="w-full min-w-full">
 
         <header className="w-full bg-gray-50 sticky top-0 z-10 py-3 px-4 grid grid-cols-[60px_1fr_2fr_88px] gap-10">
-          {[t('Type'), t('Date'), t('Call details'), ''].map((el, i) =>
-            <div key={i} className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {el}
-            </div>
-          )}
+          <div className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {t('Type')}
+          </div>
+          <div className="md:hidden col-span-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {t('Date')} / {t('Call details')}
+          </div>
+          <div className="hidden md:block text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {t('Date')}
+          </div>
+          <div className="hidden md:block text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {t('Call details')}
+          </div>
+          <div></div>
         </header>
 
         <main className="bg-white divide-y divide-gray-200">

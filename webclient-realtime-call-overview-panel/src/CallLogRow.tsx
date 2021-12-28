@@ -44,8 +44,8 @@ export function CallLogRow({ callLog }: { callLog: CallLog }) {
 
 
   return (
-    <div className="py-3 px-4 grid grid-cols-[60px_1fr_2fr_88px] gap-10 items-center">
-      <div className="flex items-center flex-col whitespace-nowrap">
+    <div className="py-3 px-4 grid grid-cols-[60px_1fr_2fr_88px] gap-10 gap-y-1 items-center">
+      <div className="flex items-center flex-col whitespace-nowrap row-span-2 md:row-span-1">
         <div className="flex-shrink-0 h-7 w-7">
           {direction === 'incoming'
             ? <PhoneIncomingIcon className="-scale-x-100 text-green-600" />
@@ -57,8 +57,8 @@ export function CallLogRow({ callLog }: { callLog: CallLog }) {
         </span>
       </div>
 
-      <div className="flex items-center">
-        <div className="ml-0">
+      <div className="flex items-center col-span-2 md:col-span-1">
+        <div className="ml-0 flex items-center md:block">
           <div className="text-sm font-medium text-gray-900 whitespace-pre-wrap">
             {t('{{val, datetime}}', {
               val: new Date(startTime), formatParams: {
@@ -66,7 +66,7 @@ export function CallLogRow({ callLog }: { callLog: CallLog }) {
               }
             })}
           </div>
-          <div className="mt-1 text-xs font-medium text-gray-500 whitespace-pre-wrap">
+          <div className="text-xs font-medium text-gray-500 whitespace-pre-wrap ml-2 md:ml-0 md:mt-1">
             {answered 
               ? (
                 <span className="px-2 inline-flex items-center py-1 leading-none rounded-full bg-green-100 text-green-800">
@@ -84,17 +84,17 @@ export function CallLogRow({ callLog }: { callLog: CallLog }) {
         </div>
       </div>
 
-      <div>
-        <div className="text-gray-500 font-semibold text-[10px]">
+      <div className="row-start-2 col-span-2 col-start-2 md:row-start-1 md:col-span-1 md:col-start-3">
+        <div className="text-gray-500 font-semibold text-[10px] leading-none">
           {direction === 'incoming' ? t('From') : t('To')}
         </div>
         <div className="text-gray-900 font-semibold leading-5">
           <Caller callerInfo={extCaller} />
         </div>
-        <div className="text-gray-500 font-semibold text-[10px] mt-1 -mb-1">
+        <div className="text-gray-500 font-semibold text-[10px] mt-1 leading-none">
           {direction === 'incoming' ? t('To') : t('From')}
         </div>
-        <div className="text-sm leading-4 text-gray-500 inline-flex items-center flex-wrap">
+        <div className="text-sm leading-4 text-gray-500 flex items-center flex-wrap">
           {segments.map(({ direction, segmentId, from, to }) => (
             <React.Fragment key={segmentId}>
               <Caller callerInfo={direction === 'incoming' ? to : from} />
@@ -104,7 +104,7 @@ export function CallLogRow({ callLog }: { callLog: CallLog }) {
         </div>
       </div>
 
-      <div className="whitespace-nowrap text-right">
+      <div className="whitespace-nowrap text-right row-span-2">
           {actions.map(({ icon, title, onClick }) => (
             <button
               key={title}
