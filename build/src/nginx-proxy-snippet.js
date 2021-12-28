@@ -9,14 +9,14 @@ const util_1 = require("util");
 const exec = (0, util_1.promisify)(child_process_1.exec);
 const TAG = '[Nginx Proxy Snippet Installer]';
 const proxySnippetTemplate = (httpPort) => `
-location ~ ^/3cx-tools {
+location ^~ /3cx-tools/ {
   add_header X-Frame-Options "SAMEORIGIN";
   add_header X-Content-Type-Options "nosniff";
   add_header X-XSS-Protection "0";
   add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'; img-src 'self' data:;";
   add_header Strict-Transport-Security max-age=15768000;
 
-  proxy_pass          http://localhost:${httpPort};
+  proxy_pass          http://localhost:${httpPort}/;
   proxy_http_version  1.1;
   proxy_set_header    Upgrade $http_upgrade;
   proxy_set_header    Connection $connection_upgrade;
