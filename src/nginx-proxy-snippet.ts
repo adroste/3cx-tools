@@ -16,7 +16,7 @@ location ^~ /3cx-tools/ {
   add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'; img-src 'self' data:;";
   add_header Strict-Transport-Security max-age=15768000;
 
-  proxy_pass          http://localhost:${httpPort}/;
+  proxy_pass          http://localhost:${httpPort};
   proxy_http_version  1.1;
   proxy_set_header    Upgrade $http_upgrade;
   proxy_set_header    Connection $connection_upgrade;
