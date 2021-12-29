@@ -21,21 +21,24 @@ export interface ActiveCall {
 }
 
 function getPhoneNumberFromCallerId(callerId: string) {
-  // format can be for instance: "Name name (+123456789)", "(123495)", "+4359090132"
-  const test = /(^|\()([+]?\d{2,})($|\)$)/;
-  const match = test.exec(callerId);
-  if (match)
-    return match[2];
-  return undefined;
+  // format can be for instance: "Name name (+123456789)", "(123495)", "+4359090132", "1234 Name name"
+  // minimum 2 digits as 3CX extensions/dns can have 2,3 or 4 numbers
+  const test1 = /\(([+]?\d{2,})\)$/; // check for number in parenthesis
+  const test2 = /^([+]?\d{2,})/; // check for number at the beginning
+  const match1 = test1.exec(callerId);
+  const match2 = test2.exec(callerId);
+  // match in parenthesis has priority
+  return match1?.[1] || match2?.[1] || undefined;
 }
 
 function stripPhoneNumberFromCallerId(callerId: string, phoneNumber: string) {
   return callerId
     .replace(phoneNumber, '')
-    .replace(' ()', '');
+    .replace('()', '')
+    .trim();
 }
 
-function createCallerInfoFromCallerId(callerId: string): CallerInfo {
+export function createCallerInfoFromCallerId(callerId: string): CallerInfo {
   const phoneNumber = getPhoneNumberFromCallerId(callerId);
   if (!phoneNumber)
     return { displayName: callerId };
@@ -43,7 +46,7 @@ function createCallerInfoFromCallerId(callerId: string): CallerInfo {
   const entry = resolveCaller(phoneNumber);
   const callerIdWithoutNr = stripPhoneNumberFromCallerId(callerId, phoneNumber);
   return {
-    displayName: entry?.displayName || callerIdWithoutNr,
+    displayName: entry?.displayName || callerIdWithoutNr || undefined,
     phoneNumber,
     phoneBookId: entry?.id || undefined,
   };

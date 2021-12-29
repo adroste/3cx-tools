@@ -24,6 +24,38 @@ describe('active-calls', () => {
         });
     }));
 });
+describe('active-calls callerId parsing', () => {
+    it('should parse format: +4912341234', () => {
+        const info = (0, active_calls_1.createCallerInfoFromCallerId)('+4912341234');
+        expect(info.phoneNumber).toBe('+4912341234');
+        expect(info.displayName).toBeUndefined();
+    });
+    it('should parse format: Nick Sample (001231234)', () => {
+        const info = (0, active_calls_1.createCallerInfoFromCallerId)('Nick Sample (001231234)');
+        expect(info.phoneNumber).toBe('001231234');
+        expect(info.displayName).toBe('Nick Sample');
+    });
+    it('should parse format: (100)', () => {
+        const info = (0, active_calls_1.createCallerInfoFromCallerId)('(100)');
+        expect(info.phoneNumber).toBe('100');
+        expect(info.displayName).toBeUndefined();
+    });
+    it('should prefer number in parenthesis and parse format: 112 113 (100)', () => {
+        const info = (0, active_calls_1.createCallerInfoFromCallerId)('112 113 (100)');
+        expect(info.phoneNumber).toBe('100');
+        expect(info.displayName).toBe('112 113');
+    });
+    it('should parse format: 10 My Extension', () => {
+        const info = (0, active_calls_1.createCallerInfoFromCallerId)('10 My Extension');
+        expect(info.phoneNumber).toBe('10');
+        expect(info.displayName).toBe('My Extension');
+    });
+    it('should parse format: 10 My Fav Nr Is 55', () => {
+        const info = (0, active_calls_1.createCallerInfoFromCallerId)('10 My Fav Nr Is 55');
+        expect(info.phoneNumber).toBe('10');
+        expect(info.displayName).toBe('My Fav Nr Is 55');
+    });
+});
 afterAll(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     yield (0, database_1.closeDb)();
 }));

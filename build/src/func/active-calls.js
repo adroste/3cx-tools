@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.offActiveCallsChange = exports.onActiveCallsChange = exports.stopMonitorActiveCalls = exports.monitorActiveCalls = exports.getActiveCalls = exports.checkActiveCalls = exports.parseActiveCalls = void 0;
+exports.offActiveCallsChange = exports.onActiveCallsChange = exports.stopMonitorActiveCalls = exports.monitorActiveCalls = exports.getActiveCalls = exports.checkActiveCalls = exports.parseActiveCalls = exports.createCallerInfoFromCallerId = void 0;
 const tslib_1 = require("tslib");
 const events_1 = require("events");
 const connection_1 = require("../api/connection");
@@ -11,16 +11,17 @@ const TAG = '[Active Calls Monitor]';
 const activeCallsMonitor = new events_1.EventEmitter();
 let checkInterval, activeCalls;
 function getPhoneNumberFromCallerId(callerId) {
-    const test = /(^|\()([+]?\d{2,})($|\)$)/;
-    const match = test.exec(callerId);
-    if (match)
-        return match[2];
-    return undefined;
+    const test1 = /\(([+]?\d{2,})\)$/;
+    const test2 = /^([+]?\d{2,})/;
+    const match1 = test1.exec(callerId);
+    const match2 = test2.exec(callerId);
+    return (match1 === null || match1 === void 0 ? void 0 : match1[1]) || (match2 === null || match2 === void 0 ? void 0 : match2[1]) || undefined;
 }
 function stripPhoneNumberFromCallerId(callerId, phoneNumber) {
     return callerId
         .replace(phoneNumber, '')
-        .replace(' ()', '');
+        .replace('()', '')
+        .trim();
 }
 function createCallerInfoFromCallerId(callerId) {
     const phoneNumber = getPhoneNumberFromCallerId(callerId);
@@ -29,11 +30,12 @@ function createCallerInfoFromCallerId(callerId) {
     const entry = (0, caller_id_1.resolveCaller)(phoneNumber);
     const callerIdWithoutNr = stripPhoneNumberFromCallerId(callerId, phoneNumber);
     return {
-        displayName: (entry === null || entry === void 0 ? void 0 : entry.displayName) || callerIdWithoutNr,
+        displayName: (entry === null || entry === void 0 ? void 0 : entry.displayName) || callerIdWithoutNr || undefined,
         phoneNumber,
         phoneBookId: (entry === null || entry === void 0 ? void 0 : entry.id) || undefined,
     };
 }
+exports.createCallerInfoFromCallerId = createCallerInfoFromCallerId;
 function parseActiveCalls(activeCalls) {
     return activeCalls.map((c) => ({
         id: c.Id,
