@@ -1,4 +1,5 @@
 {
+  "ivrPromptsDir": "/var/lib/3cxpbx/Instance1/Data/Ivr/Prompts",
   "pbxConfigJsonFile": "/var/lib/3cxpbx/Bin/config.json",
   "provisioningDir": "/var/lib/3cxpbx/Instance1/Data/Http/Interface/provisioning",
   "webclientDir": "/var/lib/3cxpbx/Data/Http/wwwroot/webclient",
@@ -8,5 +9,6 @@
   "webclientCallOverviewPanelBuildDir": "./webclient-realtime-call-overview-panel/build/",
 
   "activeCallsCheckIntervalMs": 500,
+  "dialCodes": {},
   "httpPort": 4848
 }

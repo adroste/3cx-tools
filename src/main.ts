@@ -5,6 +5,7 @@ import { Command } from 'commander';
 import { connectTo3cxApi } from './api/connection';
 import consoleStamp from 'console-stamp';
 import { initDb } from './database';
+import { initDialCodeApi } from './dial-code-api/dial-code-api';
 import { initWsApi } from './api/ws-api';
 import { installWebclientCallOverviewPanel } from './webclient-call-overview-panel';
 import { loadConfig } from './config';
@@ -78,6 +79,7 @@ program
     // api
     await startWebServer();
     initWsApi();
+    initDialCodeApi();
   });
 
 (async () => {

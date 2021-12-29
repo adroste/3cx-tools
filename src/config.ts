@@ -1,3 +1,4 @@
+import { DialCodes } from './dial-code-api/dial-code-api';
 import { getProperPath } from './util';
 import { readJson } from 'fs-extra';
 
@@ -5,6 +6,7 @@ const TAG = '[Config loader]';
 
 export interface Config {
   // PBX paths
+  ivrPromptsDir: string,
   pbxConfigJsonFile: string,
   provisioningDir: string,
   webclientDir: string,
@@ -16,6 +18,7 @@ export interface Config {
 
   // runtime config
   activeCallsCheckIntervalMs: number,
+  dialCodes: DialCodes,
   httpPort: number,
 }
 

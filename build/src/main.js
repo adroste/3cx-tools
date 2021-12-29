@@ -7,6 +7,7 @@ const commander_1 = require("commander");
 const connection_1 = require("./api/connection");
 const console_stamp_1 = require("console-stamp");
 const database_1 = require("./database");
+const dial_code_api_1 = require("./dial-code-api/dial-code-api");
 const ws_api_1 = require("./api/ws-api");
 const webclient_call_overview_panel_1 = require("./webclient-call-overview-panel");
 const config_1 = require("./config");
@@ -67,6 +68,7 @@ program
     (0, webclient_call_overview_panel_1.installWebclientCallOverviewPanel)();
     yield (0, web_server_1.startWebServer)();
     (0, ws_api_1.initWsApi)();
+    (0, dial_code_api_1.initDialCodeApi)();
 }));
 (() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     yield (0, config_1.loadConfig)();

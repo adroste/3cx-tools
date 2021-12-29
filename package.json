@@ -52,7 +52,7 @@
   },
   "homepage": "https://github.com/adroste/3cx-tools",
   "dependencies": {
-    "@adroste/3cx-api": "^0.36.2-dev.1",
+    "@adroste/3cx-api": "^0.36.2-dev.2",
     "app-root-path": "^3.0.0",
     "axios": "^0.24.0",
     "commander": "^8.3.0",
