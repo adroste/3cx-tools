@@ -55,6 +55,11 @@ describe('active-calls callerId parsing', () => {
         expect(info.phoneNumber).toBe('10');
         expect(info.displayName).toBe('My Fav Nr Is 55');
     });
+    it('should parse dial code numbers: 10001 Service A - 11 (*91234)', () => {
+        const info = (0, active_calls_1.createCallerInfoFromCallerId)('10001 Service A - 11 (*91234)');
+        expect(info.phoneNumber).toBe('*91234');
+        expect(info.displayName).toBe('10001 Service A - 11');
+    });
 });
 afterAll(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     yield (0, database_1.closeDb)();

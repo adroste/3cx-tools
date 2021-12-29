@@ -11,8 +11,8 @@ const TAG = '[Active Calls Monitor]';
 const activeCallsMonitor = new events_1.EventEmitter();
 let checkInterval, activeCalls;
 function getPhoneNumberFromCallerId(callerId) {
-    const test1 = /\(([+]?\d{2,})\)$/;
-    const test2 = /^([+]?\d{2,})/;
+    const test1 = /\(([+*]?\d{2,})\)$/;
+    const test2 = /^([+*]?\d{2,})/;
     const match1 = test1.exec(callerId);
     const match2 = test2.exec(callerId);
     return (match1 === null || match1 === void 0 ? void 0 : match1[1]) || (match2 === null || match2 === void 0 ? void 0 : match2[1]) || undefined;

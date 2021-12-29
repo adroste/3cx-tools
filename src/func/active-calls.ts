@@ -21,10 +21,10 @@ export interface ActiveCall {
 }
 
 function getPhoneNumberFromCallerId(callerId: string) {
-  // format can be for instance: "Name name (+123456789)", "(123495)", "+4359090132", "1234 Name name"
+  // format can be for instance: "Name name (+123456789)", "(123495)", "+4359090132", "1234 Name name", "*91234"
   // minimum 2 digits as 3CX extensions/dns can have 2,3 or 4 numbers
-  const test1 = /\(([+]?\d{2,})\)$/; // check for number in parenthesis
-  const test2 = /^([+]?\d{2,})/; // check for number at the beginning
+  const test1 = /\(([+*]?\d{2,})\)$/; // check for number in parenthesis
+  const test2 = /^([+*]?\d{2,})/; // check for number at the beginning
   const match1 = test1.exec(callerId);
   const match2 = test2.exec(callerId);
   // match in parenthesis has priority
