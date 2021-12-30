@@ -1,11 +1,9 @@
-import { ConsoleClient, DashboardClient, IHttpClient, createClient } from '@adroste/3cx-api';
+import { ConsoleClient, DashboardClient, IHttpClient, createClient, login } from '@adroste/3cx-api';
 
 import { Axios } from 'axios';
 import { getDb } from '../database';
 
 const TAG = '[3CX REST API]';
-const RECONNECT_MAX_TRY = 1000;
-let reconnectTimeout: NodeJS.Timer | null = null;
 
 export let api: {
   httpClient: IHttpClient,
@@ -26,39 +24,40 @@ async function getApiLoginCredentials() {
   } as const;
 }
 
-function reconnectLoop(i = 1) {
-  if (reconnectTimeout)
-    return;
-
-  if (i === RECONNECT_MAX_TRY)
-    throw new Error('3cx rest api max reconnect attempts exceeded');
-
-  reconnectTimeout = setTimeout(async () => {
-    try {
-      await connectTo3cxApi();
-    } catch (err) {
-      console.error(TAG, `reconnect failed (${i}), trying againg...`);
-      reconnectTimeout = null;
-      reconnectLoop(i + 1);
-    }
-  }, 1000);
-}
-
 export async function connectTo3cxApi() {
   const credentials = await getApiLoginCredentials();
-  const httpClient = await createClient('http://localhost:5000',
-   { Username: credentials.username, Password: credentials.password });
+  const creds = { Username: credentials.username, Password: credentials.password };
+  const httpClient = await createClient('http://localhost:5000', creds);
 
   console.log(TAG, 'connected');
 
+  let authorizing: Promise<void> | null = null;
   (httpClient as Axios).interceptors.response.use(response => response, error => {
     if (
-      !error?.response // service down
-      || error.response.status === 401 // unauthorized
-    ) { 
-      reconnectLoop(); // self healing
-    } 
-    return Promise.reject(error);
+      error?.response?.status !== 401 // everything but unauthorized
+    ) {
+      return Promise.reject(error);
+    }
+
+    // self healing
+    // create pending authorization
+    authorizing ??= login(httpClient, creds)
+      .finally(() => authorizing = null)
+      .then(data => {
+        if (data !== 'AuthSuccess')
+          return Promise.reject(error);
+        return Promise.resolve();
+      })
+      .catch(error => Promise.reject(error));
+
+    const originalRequestConfig = error.config;
+    delete originalRequestConfig.headers['Cookie']; // use from defaults
+    delete originalRequestConfig.httpAgent;
+    delete originalRequestConfig.httpsAgent;
+    delete originalRequestConfig.jar;
+
+    // delay original requests until authorization has been completed
+    return authorizing.then(() => (httpClient as Axios).request(originalRequestConfig));
   });
 
   api = {

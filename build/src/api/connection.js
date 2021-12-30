@@ -5,8 +5,6 @@ const tslib_1 = require("tslib");
 const _3cx_api_1 = require("@adroste/3cx-api");
 const database_1 = require("../database");
 const TAG = '[3CX REST API]';
-const RECONNECT_MAX_TRY = 1000;
-let reconnectTimeout = null;
 function getApiLoginCredentials() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const res = yield (0, database_1.getDb)().query(`SELECT name,value FROM public.parameter WHERE name='WEBSERVERUSER' OR name ='WEBSERVERPASS'`);
@@ -21,33 +19,32 @@ function getApiLoginCredentials() {
         };
     });
 }
-function reconnectLoop(i = 1) {
-    if (reconnectTimeout)
-        return;
-    if (i === RECONNECT_MAX_TRY)
-        throw new Error('3cx rest api max reconnect attempts exceeded');
-    reconnectTimeout = setTimeout(() => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-        try {
-            yield connectTo3cxApi();
-        }
-        catch (err) {
-            console.error(TAG, `reconnect failed (${i}), trying againg...`);
-            reconnectTimeout = null;
-            reconnectLoop(i + 1);
-        }
-    }), 1000);
-}
 function connectTo3cxApi() {
     return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const credentials = yield getApiLoginCredentials();
-        const httpClient = yield (0, _3cx_api_1.createClient)('http://localhost:5000', { Username: credentials.username, Password: credentials.password });
+        const creds = { Username: credentials.username, Password: credentials.password };
+        const httpClient = yield (0, _3cx_api_1.createClient)('http://localhost:5000', creds);
         console.log(TAG, 'connected');
+        let authorizing = null;
         httpClient.interceptors.response.use(response => response, error => {
-            if (!(error === null || error === void 0 ? void 0 : error.response)
-                || error.response.status === 401) {
-                reconnectLoop();
+            var _a;
+            if (((_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.status) !== 401) {
+                return Promise.reject(error);
             }
-            return Promise.reject(error);
+            authorizing !== null && authorizing !== void 0 ? authorizing : (authorizing = (0, _3cx_api_1.login)(httpClient, creds)
+                .finally(() => authorizing = null)
+                .then(data => {
+                if (data !== 'AuthSuccess')
+                    return Promise.reject(error);
+                return Promise.resolve();
+            })
+                .catch(error => Promise.reject(error)));
+            const originalRequestConfig = error.config;
+            delete originalRequestConfig.headers['Cookie'];
+            delete originalRequestConfig.httpAgent;
+            delete originalRequestConfig.httpsAgent;
+            delete originalRequestConfig.jar;
+            return authorizing.then(() => httpClient.request(originalRequestConfig));
         });
         exports.api = {
             httpClient,
