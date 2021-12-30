@@ -7,34 +7,35 @@ const path_1 = require("path");
 const promises_1 = require("fs/promises");
 const TAG = '[Phonebook Fanvil]';
 const xmlTemplate = (body) => `
-<?xml version="1.0" encoding="UTF-8"?>
-<FanvilIPPhoneDirectory>
-  <Title>3CX Phonebook</Title>
+<?xml version="1.0" encoding="utf-8"?>
+<PhoneBook>
   ${body}
-</FanvilIPPhoneDirectory>
+</PhoneBook>
 `;
 function buildPhonebookFanvil(phonebook) {
     let body = '';
     for (const entry of phonebook) {
-        const phonenumbers = phonebook_1.PHONE_NUMBER_PROPS.map(p => entry[p]).filter(x => x);
+        let phonenumbers = phonebook_1.PHONE_NUMBER_PROPS.map(p => entry[p]).filter(x => x);
         if (!entry.displayName || phonenumbers.length === 0)
             continue;
         body += '  <DirectoryEntry>\n';
         body += `   <Name>${entry.displayName}</Name>\n`;
-        let mobileEntry = false, telephoneEntry = false;
-        phonenumbers.forEach(nr => {
-            if (!mobileEntry && entry.mobile === nr) {
-                body += `   <Mobile>${nr}</Mobile>\n`;
-                mobileEntry = true;
-            }
-            else if (!telephoneEntry) {
-                body += `   <Telephone>${nr}</Telephone>\n`;
-                telephoneEntry = true;
-            }
-            else {
-                body += `   <Other>${nr}</Other>\n`;
-            }
-        });
+        if (entry.mobile) {
+            body += `   <Mobile>${entry.mobile}</Mobile>\n`;
+            phonenumbers = phonenumbers.filter(nr => nr !== entry.mobile);
+            if (phonenumbers[0])
+                body += `   <Telephone>${phonenumbers[0]}</Telephone>\n`;
+            if (phonenumbers[1])
+                body += `   <Other>${phonenumbers[1]}</Other>\n`;
+        }
+        else {
+            if (phonenumbers[0])
+                body += `   <Telephone>${phonenumbers[0]}</Telephone>\n`;
+            if (phonenumbers[1])
+                body += `   <Mobile>${phonenumbers[1]}</Mobile>\n`;
+            if (phonenumbers[2])
+                body += `   <Other>${phonenumbers[2]}</Other>\n`;
+        }
         body += '  </DirectoryEntry>\n';
     }
     return xmlTemplate(body.trim()).trim();

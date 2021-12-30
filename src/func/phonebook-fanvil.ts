@@ -7,36 +7,38 @@ const TAG = '[Phonebook Fanvil]';
 
 // spec see https://www.fanvil.com/Uploads/Temp/download/20191226/5e0454ec2e7f0.pdf pages 8/9
 const xmlTemplate = (body: string) => `
-<?xml version="1.0" encoding="UTF-8"?>
-<FanvilIPPhoneDirectory>
-  <Title>3CX Phonebook</Title>
+<?xml version="1.0" encoding="utf-8"?>
+<PhoneBook>
   ${body}
-</FanvilIPPhoneDirectory>
+</PhoneBook>
 `;
 
 export function buildPhonebookFanvil(phonebook: PhonebookEntry[]) {
   let body = '';
   for (const entry of phonebook) {
-    const phonenumbers = PHONE_NUMBER_PROPS.map(p => entry[p]).filter(x => x);
+    let phonenumbers = PHONE_NUMBER_PROPS.map(p => entry[p]).filter(x => x);
     if (!entry.displayName || phonenumbers.length === 0)
       continue;
 
     body += '  <DirectoryEntry>\n';
     body += `   <Name>${entry.displayName}</Name>\n`;
 
-    // make sure that <Mobile> and <Telephone> entry are only added once
-    let mobileEntry = false, telephoneEntry = false; 
-    phonenumbers.forEach(nr => {
-      if (!mobileEntry && entry.mobile === nr) {
-        body += `   <Mobile>${nr}</Mobile>\n`;
-        mobileEntry = true;
-      } else if (!telephoneEntry) {
-        body += `   <Telephone>${nr}</Telephone>\n`;
-        telephoneEntry = true;
-      } else {
-        body += `   <Other>${nr}</Other>\n`;
-      }
-    });
+    // fanvil only supports 3 numbers per entry;
+    if (entry.mobile) {
+      body += `   <Mobile>${entry.mobile}</Mobile>\n`;
+      phonenumbers = phonenumbers.filter(nr => nr !== entry.mobile);
+      if (phonenumbers[0])
+        body += `   <Telephone>${phonenumbers[0]}</Telephone>\n`;
+      if (phonenumbers[1])
+        body += `   <Other>${phonenumbers[1]}</Other>\n`;
+    } else {
+      if (phonenumbers[0])
+        body += `   <Telephone>${phonenumbers[0]}</Telephone>\n`;
+      if (phonenumbers[1])
+        body += `   <Mobile>${phonenumbers[1]}</Mobile>\n`;
+      if (phonenumbers[2]) 
+        body += `   <Other>${phonenumbers[2]}</Other>\n`;
+    }
 
     body += '  </DirectoryEntry>\n';
   }
