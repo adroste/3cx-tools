@@ -12,6 +12,7 @@ export interface Config {
   webclientDir: string,
 
   // app paths
+  mcSettingsPanelBuildDir: string,
   nginxProxySnippetInstallFile: string,
   serviceInstallFile: string,
   webclientCallOverviewPanelBuildDir: string,

@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/3cx-tools/mc-settings-panel/static/css/main.e7eac768.css",
+    "main.js": "/3cx-tools/mc-settings-panel/static/js/main.366488ac.js",
+    "index.html": "/3cx-tools/mc-settings-panel/index.html",
+    "static/media/getFetch.cjs": "/3cx-tools/mc-settings-panel/static/media/getFetch.c780682470504fffbd04.cjs",
+    "main.e7eac768.css.map": "/3cx-tools/mc-settings-panel/static/css/main.e7eac768.css.map",
+    "main.366488ac.js.map": "/3cx-tools/mc-settings-panel/static/js/main.366488ac.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e7eac768.css",
+    "static/js/main.366488ac.js"
+  ]
+}

@@ -4,6 +4,7 @@
   "provisioningDir": "/var/lib/3cxpbx/Instance1/Data/Http/Interface/provisioning",
   "webclientDir": "/var/lib/3cxpbx/Data/Http/wwwroot/webclient",
 
+  "mcSettingsPanelBuildDir": "./mc-settings-panel/build/",
   "nginxProxySnippetInstallFile": "/var/lib/3cxpbx/Bin/nginx/conf/snippets/14-3cx-tools-proxy.conf",
   "serviceInstallFile": "/lib/systemd/system/3cx-tools-server.service",
   "webclientCallOverviewPanelBuildDir": "./webclient-realtime-call-overview-panel/build/",

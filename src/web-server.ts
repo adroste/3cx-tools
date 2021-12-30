@@ -32,4 +32,5 @@ function setupExpress() {
     credentials: true,
   }));
   app.use('/3cx-tools/call-overview-panel' , express.static(getConfig().webclientCallOverviewPanelBuildDir));
+  app.use('/3cx-tools/mc-settings-panel' , express.static(getConfig().mcSettingsPanelBuildDir));
 }
