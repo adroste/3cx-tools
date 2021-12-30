@@ -63,6 +63,7 @@ function getCallerTypeFromDnType(dnType) {
         case 1: return 'External';
         case 5: return 'Voicemail';
         case 6: return 'IVR';
+        case 13: return 'External';
         default: return undefined;
     }
 }
@@ -97,6 +98,7 @@ LIMIT $2
         if (calls.length === 0)
             return [];
         const maxCallId = calls[0].id;
+        minCallId = calls[calls.length - 1].id;
         const segmentsRes = yield (0, database_1.getDb)().query(`
 SELECT call_id, cl_segments.id as segment_id, start_time, end_time, 
 	src.dn AS src_dn, src.dn_type as src_dn_type, src.caller_number as src_caller_number, src.display_name as src_display_name, 
