@@ -18,6 +18,10 @@ function buildPhonebookFanvil(phonebook) {
         let phonenumbers = phonebook_1.PHONE_NUMBER_PROPS.map(p => entry[p]).filter(x => x);
         if (!entry.displayName || phonenumbers.length === 0)
             continue;
+        Object.keys(entry).forEach((e) => {
+            if (typeof entry[e] === 'string')
+                entry[e] = entry[e].replace(/&/g, '+');
+        });
         body += '  <DirectoryEntry>\n';
         body += `   <Name>${entry.displayName}</Name>\n`;
         if (entry.mobile) {

@@ -20,6 +20,12 @@ export function buildPhonebookFanvil(phonebook: PhonebookEntry[]) {
     if (!entry.displayName || phonenumbers.length === 0)
       continue;
 
+    // & signs are not supported by fanvil phones => replace them with +
+    (Object.keys(entry) as Array<keyof typeof entry>).forEach((e) => {
+      if (typeof entry[e] === 'string')
+        (entry[e] as string) = (entry[e] as string).replace(/&/g, '+');
+    })
+
     body += '  <DirectoryEntry>\n';
     body += `   <Name>${entry.displayName}</Name>\n`;
 
