@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.stopPhonebookPatcherSnom = exports.startPhonebookPatcherSnom = exports.updatePhonebookSnom = exports.buildPhonebookSnom = void 0;
 const tslib_1 = require("tslib");
 const phonebook_1 = require("./phonebook");
+const config_1 = require("../config");
 const path_1 = require("path");
 const promises_1 = require("fs/promises");
 const TAG = '[Phonebook Snom]';
@@ -41,7 +42,8 @@ function getContactInfoXml(entry) {
 function buildPhonebookSnom(phonebook) {
     let body = '';
     for (const entry of phonebook) {
-        const usedKeys = phonebook_1.PHONE_NUMBER_PROPS.filter(key => entry[key]);
+        const phoneNumberOrder = (0, config_1.getConfig)().phoneNumberOrder;
+        const usedKeys = phoneNumberOrder.filter(key => entry[key]);
         const phoneNumberCount = usedKeys.length;
         if ((!entry.firstName && !entry.lastName) || phoneNumberCount === 0)
             continue;

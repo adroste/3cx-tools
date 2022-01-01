@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.stopPhonebookPatcherFanvil = exports.startPhonebookPatcherFanvil = exports.updatePhonebookFanvil = exports.buildPhonebookFanvil = void 0;
 const tslib_1 = require("tslib");
 const phonebook_1 = require("./phonebook");
+const config_1 = require("../config");
 const path_1 = require("path");
 const promises_1 = require("fs/promises");
 const TAG = '[Phonebook Fanvil]';
@@ -15,7 +16,8 @@ const xmlTemplate = (body) => `
 function buildPhonebookFanvil(phonebook) {
     let body = '';
     for (const entry of phonebook) {
-        let phonenumbers = phonebook_1.PHONE_NUMBER_PROPS.map(p => entry[p]).filter(x => x);
+        const phoneNumberOrder = (0, config_1.getConfig)().phoneNumberOrder;
+        let phonenumbers = phoneNumberOrder.map(p => entry[p]).filter(x => x);
         if (!entry.displayName || phonenumbers.length === 0)
             continue;
         Object.keys(entry).forEach((e) => {

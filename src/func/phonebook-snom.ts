@@ -1,5 +1,6 @@
-import { PHONE_NUMBER_PROPS, PhonebookEntry, getPhonebook, getProvisionDirPath, offPhonebookChange, onPhonebookChange } from './phonebook';
+import { PhonebookEntry, getPhonebook, getProvisionDirPath, offPhonebookChange, onPhonebookChange } from './phonebook';
 
+import { getConfig } from '../config';
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
 
@@ -48,7 +49,8 @@ function getContactInfoXml(entry: PhonebookEntry) {
 export function buildPhonebookSnom(phonebook: PhonebookEntry[]) {
   let body = '';
   for (const entry of phonebook) {
-    const usedKeys = PHONE_NUMBER_PROPS.filter(key => entry[key]);
+    const phoneNumberOrder = getConfig().phoneNumberOrder;
+    const usedKeys = phoneNumberOrder.filter(key => entry[key]);
     const phoneNumberCount = usedKeys.length;
     if ((!entry.firstName && !entry.lastName) || phoneNumberCount === 0)
       continue;

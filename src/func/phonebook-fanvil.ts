@@ -1,5 +1,6 @@
-import { PHONE_NUMBER_PROPS, PhonebookEntry, getPhonebook, getProvisionDirPath, offPhonebookChange, onPhonebookChange } from './phonebook';
+import { PhonebookEntry, getPhonebook, getProvisionDirPath, offPhonebookChange, onPhonebookChange } from './phonebook';
 
+import { getConfig } from '../config';
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
 
@@ -16,7 +17,8 @@ const xmlTemplate = (body: string) => `
 export function buildPhonebookFanvil(phonebook: PhonebookEntry[]) {
   let body = '';
   for (const entry of phonebook) {
-    let phonenumbers = PHONE_NUMBER_PROPS.map(p => entry[p]).filter(x => x);
+    const phoneNumberOrder = getConfig().phoneNumberOrder;
+    let phonenumbers = phoneNumberOrder.map(p => entry[p]).filter(x => x);
     if (!entry.displayName || phonenumbers.length === 0)
       continue;
 

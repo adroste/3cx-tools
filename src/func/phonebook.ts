@@ -56,8 +56,8 @@ export interface PhonebookEntry {
 
 /**
  * All props of PhonebookEntry that include phone numbers.
- * Order by importance / display order.
  * These numbers are copied to the telephone (if possible).
+ * The order is specified in config.phoneNumberOrder
  */ 
 export const PHONE_NUMBER_PROPS = [
   'mobile',

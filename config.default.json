@@ -11,5 +11,14 @@
 
   "activeCallsCheckIntervalMs": 500,
   "dialCodes": {},
-  "httpPort": 4848
+  "httpPort": 4848,
+  "phoneNumberOrder": [
+    "mobile",
+    "private",
+    "business",
+    "mobile2",
+    "private2",
+    "business2",
+    "extra"
+  ]
 }

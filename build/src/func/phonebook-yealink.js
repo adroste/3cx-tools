@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.stopPhonebookPatcherYealink = exports.startPhonebookPatcherYealink = exports.updatePhonebookYealink = exports.buildPhonebookYealink = void 0;
 const tslib_1 = require("tslib");
 const phonebook_1 = require("./phonebook");
+const config_1 = require("../config");
 const path_1 = require("path");
 const promises_1 = require("fs/promises");
 const TAG = '[Phonebook Yealink]';
@@ -17,7 +18,8 @@ const xmlTemplate = (body) => `
 function buildPhonebookYealink(phonebook) {
     let body = '';
     for (const entry of phonebook) {
-        const phonenumbers = phonebook_1.PHONE_NUMBER_PROPS.map(p => entry[p]).filter(x => x);
+        const phoneNumberOrder = (0, config_1.getConfig)().phoneNumberOrder;
+        const phonenumbers = phoneNumberOrder.map(p => entry[p]).filter(x => x);
         if (!entry.displayName || phonenumbers.length === 0)
             continue;
         body += '  <DirectoryEntry>\n';

@@ -1,4 +1,5 @@
 import { DialCodes } from './dial-code-api/dial-code-api';
+import { PHONE_NUMBER_PROPS } from './func/phonebook';
 import { getProperPath } from './util';
 import { readJson } from 'fs-extra';
 
@@ -21,6 +22,7 @@ export interface Config {
   activeCallsCheckIntervalMs: number,
   dialCodes: DialCodes,
   httpPort: number,
+  phoneNumberOrder: Array<typeof PHONE_NUMBER_PROPS[number]>,
 }
 
 let config: Config;
