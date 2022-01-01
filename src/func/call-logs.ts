@@ -214,8 +214,13 @@ ORDER BY call_id ASC, seq_order ASC
     return segmentsById;
   }, {} as { [id: number]: CallSegment[] });
 
-  const callLogs: CallLog[] = calls.map(call => {
+  const callLogs: CallLog[] = [];
+  calls.forEach(call => {
     const segments = segmentsById[call.id];
+    if (!segments) {
+      console.error(TAG, 'segments is undefined. call:', call)
+      return;
+    }
     let extCaller: CallerInfo = segments[0].direction === 'incoming'
       ? segments[0].from : segments[0].to;
     for (const segment of segments) {
@@ -227,7 +232,7 @@ ORDER BY call_id ASC, seq_order ASC
         break;
       }
     }
-    return {
+    callLogs.push({
       id: call.id,
       answered: call.is_answered,
       direction: segments[0].direction,
@@ -236,7 +241,7 @@ ORDER BY call_id ASC, seq_order ASC
       extCaller,
       startTime: call.start_time,
       talkingDuration: call.talking_dur?.toISOString(),
-    };
+    });
   });
 
   return callLogs;
