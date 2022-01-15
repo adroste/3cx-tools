@@ -1,3 +1,21 @@
+# No longer maintained
+
+I tried to hack 3CX in so many ways because it did not fit my use cases that I finally decided to move away from it.
+
+I switched to FreePBX 16 and I am really happy with it.
+The interface is not as shiny as the one from 3CX but it can do so much more, e.g. different ringtones per line, proper dial codes, working fax etc.
+
+The only thing that it is missing is a proper calls panel (like this one) and contacts management. Therefore I forked this repo and created a nice and shiny FreePBX module here: https://github.com/adroste/freepbx-realtime-calls-contacts-panel
+
+If you also want to try out FreePBX I recommend the official image. If you want to use a Raspberry Pi don't want your time with raspbx and visit https://www.dslreports.com/forum/r30661088-PBX-FreePBX-for-the-Raspberry-Pi instead.
+
+Feel free to use, fork, modify any of this. *Happy Hacking!*
+
+*I do not intend to archive this repo right now as the code is working perfectly fine and I'm open for handing it over to someone else. The dialcode api was a pretty awesome idea...*
+
+---
+---
+
 # 3cx-tools
 
 Collection of several tools for 3CX.
