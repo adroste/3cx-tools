@@ -1,3 +1,7 @@
+# Do you want to take it over?
+
+Please open an issue if you want to take this repo over and adjust it to the current version, add new stuff etc.
+
 # No longer maintained
 
 I tried to hack 3CX in so many ways because it did not fit my use cases that I finally decided to move away from it.
@@ -11,7 +15,7 @@ If you also want to try out FreePBX I recommend the official image. If you want 
 
 Feel free to use, fork, modify any of this. *Happy Hacking!*
 
-*I do not intend to archive this repo right now as the code is working perfectly fine and I'm open for handing it over to someone else. The dialcode api was a pretty awesome idea...*
+*I do not intend to archive this repo right now as the code is working perfectly fine with v16 and I'm open for handing it over to someone else. The dialcode api was a pretty awesome idea...*
 
 ---
 ---
