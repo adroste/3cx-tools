@@ -15,7 +15,7 @@ If you also want to try out FreePBX I recommend the official image. If you want 
 
 Feel free to use, fork, modify any of this. *Happy Hacking!*
 
-*I do not intend to archive this repo right now as the code is working perfectly fine with v16 and I'm open for handing it over to someone else. The dialcode api was a pretty awesome idea...*
+*I do not intend to archive this repo right now as the code is working perfectly fine with and I'm open for handing it over to someone else. The dialcode api was a pretty awesome idea...*
 
 ---
 ---
